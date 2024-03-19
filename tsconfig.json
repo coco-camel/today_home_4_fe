@@ -8,7 +8,8 @@
     "strict": true,
     "esModuleInterop": true,
     "jsx": "react",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["vite/client"]
   },
   "include": [
     "vite.config.ts",
