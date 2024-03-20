@@ -4,15 +4,21 @@ import Main from '../pages/Main';
 import React from 'react';
 import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
+import Layout from '../components/layout/Layout';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
     element: <App />,
     children: [
       {
-        index: true,
-        element: <Main />,
+        path: '/',
+        element: <Layout />,
+        children: [
+          {
+            index: true,
+            element: <Main />,
+          },
+        ],
       },
       {
         path: '/signup',
