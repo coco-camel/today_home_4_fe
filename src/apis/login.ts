@@ -7,7 +7,6 @@ import type {
 export const signUp = async (
   user: SignUpUser,
 ) => {
-  console.log(user);
   try {
     const res = await instance.post(
       '/api/v1/members/signup',
@@ -19,12 +18,12 @@ export const signUp = async (
   }
 };
 export const login = async (user: LoginUser) => {
-  console.log(user);
   try {
     const res = await instance.post(
-      '/api/v1/members/signup',
+      '/api/v1/members/signin',
       user,
     );
+    console.log(res);
     return res;
   } catch (error) {
     console.log(error);
