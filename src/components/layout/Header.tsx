@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ArroDownIcon from '../../assets/icons/simple-line-icons_arrow-up.svg';
+import HomeLogo from '../../assets/icons/homelogo.svg';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
@@ -11,7 +12,9 @@ const Header = () => {
           <MainHeader>
             <Logo>
               <Link to="/">
-                <h1>오늘내집</h1>
+                <h1>
+                  <img src={HomeLogo} alt="" />
+                </h1>
               </Link>
             </Logo>
             <Nav>

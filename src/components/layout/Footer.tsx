@@ -1,6 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import Isms from '../../assets/images/isms.png';
+import Dnv from '../../assets/images/dvn.png';
+import Pcr from '../../assets/images/pcr.png';
+import SnsIconFacebook from '../../assets/icons/facebook.svg';
+import SnsIconInstagram from '../../assets/icons/insta.svg';
+import SnsIconKakaoStory from '../../assets/icons/kakao.svg';
+import SnsIconNaverPost from '../../assets/icons/naver.svg';
+import SnsIconYoutube from '../../assets/icons/youtube.svg';
 
 function Footer() {
   return (
@@ -59,9 +67,6 @@ function Footer() {
             <Link to="#">제휴/광고 문의</Link>
           </li>
           <li>
-            <Link to="#">사업자 구매 회원</Link>
-          </li>
-          <li>
             <Link to="#">시공파트너 안내</Link>
           </li>
           <li>
@@ -81,8 +86,7 @@ function Footer() {
                 서울 서초구 서초대로74길 4
                 삼성생명서초타워 25층, 27층
               </li>
-            </ul>
-            <ul>
+
               <li>contact@bucketplace.net</li>
               <li>
                 사업자등록번호 119-86-91245{' '}
@@ -90,62 +94,83 @@ function Footer() {
                   <strong>사업자정보확인</strong>
                 </Link>
               </li>
-            </ul>
-            <ul>
+
               <li>
                 통신판매업신고번호
                 제2018-서울서초-0580호
               </li>
             </ul>
+            <p>
+              고객님이 현금결제한 금액에 대해
+              우리은행과 채무지급보증 계약을
+              체결하 여 안전거래를 보장하고
+              있습니다.
+            </p>
           </CorpIntro>
           <Certificate>
             <li>
-              {/* <img src="images/ui/footer/mark_isms.png" alt=""> */}
-              <p>
-                오늘의집 서비스 운영 2021. 09. 08
-                ~ 2024. 09. 07
-              </p>
+              <Link to="#">
+                <img src={Isms} alt="" />
+                <div>
+                  <p>오늘의집 서비스 운영</p>
+                  <p>
+                    2021. 09. 08 ~ 2024. 09. 07
+                  </p>
+                </div>
+              </Link>
             </li>
             <li>
-              {/* <img src="images/ui/footer/mark_iso.png" alt=""> */}
-              <p>
-                고객님이 현금결제한 금액에 대해
-                우리은행과 채무지급보증 계약을
-                체결하 여 안전거래를 보장하고
-                있습니다.
-              </p>
+              <Link to="#">
+                <img src={Dnv} alt="" />
+              </Link>
+            </li>
+            <li>
+              <Link to="#">
+                <img src={Pcr} alt="" />
+              </Link>
             </li>
           </Certificate>
-          <p>
-            (주)버킷플레이스는 통신판매중개자로
-            거래 당사자가 아니므로, 판매자가
-            등록한 상품정보 및 거래 등에 대해
-            책임을 지지 않습니 다. 단,
-            (주)버킷플레이스가 판매자로 등록
-            판매한 상품은 판매자로서 책임을
-            부담합니다.
-          </p>
+          <div>
+            <p>
+              (주)버킷플레이스는 통신판매중개자로
+              거래 당사자가 아니므로, 판매자가
+              등록한 상품정보 및 거래 등에 대해
+              책임을 지지 않습니다. 단,
+              (주)버킷플레이스가 판매자로 등록
+              판매한 상품은 판매자로서 책임을
+              부담합니다.
+            </p>
+          </div>
           <SnsLink>
             <Link to="#">
-              {/* <li><img src="images/ui/footer/icon/1.svg" alt=""></li> */}
+              <img src={SnsIconYoutube} alt="" />
             </Link>
             <Link to="#">
-              {/* <li><img src="images/ui/footer/icon/2.svg" alt=""></li> */}
+              <img
+                src={SnsIconInstagram}
+                alt=""
+              />
             </Link>
             <Link to="#">
-              {/* <li><img src="images/ui/footer/icon/3.svg" alt=""></li> */}
+              <img src={SnsIconFacebook} alt="" />
             </Link>
             <Link to="#">
-              {/* <li><img src="images/ui/footer/icon/4.svg" alt=""></li> */}
+              <img
+                src={SnsIconKakaoStory}
+                alt=""
+              />
             </Link>
             <Link to="#">
-              {/* <li><img src="images/ui/footer/icon/5.svg" alt=""></li> */}
+              <img
+                src={SnsIconNaverPost}
+                alt=""
+              />
             </Link>
           </SnsLink>
-          <p>
+          <Copyright>
             Copyright 2014. bucketplace, Co., Ltd.
             All rights reserved.
-          </p>
+          </Copyright>
         </Infomation>
       </FooterInner>
     </FooterArea>
@@ -170,10 +195,16 @@ const FooterInner = styled.div`
   width: 100%;
   max-width: 1256px;
   padding: 40px 60px;
+  margin: 0 auto;
   gap: 30px;
   background: #f7f9fa;
 `;
 const Customer = styled.div`
+  > a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
   h1 {
     font-size: 18px;
     font-weight: 700;
@@ -257,16 +288,86 @@ const Infomation = styled.div`
   font-size: 10px;
 `;
 const CorpIntro = styled.div`
+  overflow: hidden;
   ul {
+    margin-left: -12px;
     li {
       display: inline-block;
       line-height: 20px;
       font-size: 12px;
       white-space: nowrap;
+      position: relative;
+      margin-left: 6px;
+      padding-left: 6px;
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 4px;
+        width: 1px;
+        height: 11px;
+        margin-right: 5px;
+        background: rgb(130, 140, 148);
+      }
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      strong {
+        font-size: 12px;
+        color: rgb(130, 140, 148);
+      }
+    }
+  }
+  p {
+    margin-top: 12px;
+    font-size: 10px;
+  }
+`;
+const Certificate = styled.ul`
+  gap: 6px;
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 102px;
+    height: 38px;
+    padding: 0 6px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    img {
+      width: 32px;
+    }
+  }
+  li a {
+    display: flex;
+    align-items: center;
+    word-wrap: break-word;
+    white-space: nowrap;
+    gap: 5px;
+    p {
+      font-size: 10px;
+      color: rgb(130, 140, 148);
+    }
+  }
+  display: flex;
+  + div p {
+    font-size: 10px;
+  }
+`;
+const SnsLink = styled.div`
+  display: flex;
+  gap: 12px;
+  a {
+    opacity: 0.8;
+    &:hover {
+      opacity: 1;
     }
   }
 `;
-const Certificate = styled.ul``;
-const SnsLink = styled.ul``;
+const Copyright = styled.p`
+  font-size: 10px;
+`;
 
 export default Footer;
