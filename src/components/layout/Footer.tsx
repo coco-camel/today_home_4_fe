@@ -12,168 +12,168 @@ import SnsIconYoutube from '../../assets/icons/youtube.svg';
 
 function Footer() {
   return (
-      <FooterArea>
-        <FooterInner>
-          <Customer>
-            <Link to="/">
-              <h1>고객센터</h1>
+    <FooterArea>
+      <FooterInner>
+        <Customer>
+          <Link to="/">
+            <h1>고객센터</h1>
+          </Link>
+          <Tel>
+            <strong>1670-0876</strong>
+            <span>09:00 ~ 18:00</span>
+          </Tel>
+          <ul>
+            <li>평일: 전체 문의 상담</li>
+            <li>
+              토요일, 공휴일: 오늘의집 직접배송,
+              이사/시공/제품설치 문의 상담
+            </li>
+            <li>일요일: 휴무</li>
+          </ul>
+          <EctCustomer>
+            <Link to="#">
+              카톡 상담(평일 09:00~18:00)
             </Link>
-            <Tel>
-              <strong>1670-0876</strong>
-              <span>09:00 ~ 18:00</span>
-            </Tel>
+            <Link to="#">이메일 문의</Link>
+          </EctCustomer>
+        </Customer>
+        <SectionLine />
+        <Anchor>
+          <li>
+            <Link to="#">회사소개</Link>
+          </li>
+          <li>
+            <Link to="#">채용정보</Link>
+          </li>
+          <li>
+            <Link to="#">이용약관</Link>
+          </li>
+          <li>
+            <Link to="#" className="point">
+              개인정보처리방침
+            </Link>
+          </li>
+          <li>
+            <Link to="#">공지사항</Link>
+          </li>
+          <li>
+            <Link to="#">안전거래센터</Link>
+          </li>
+
+          <li>
+            <Link to="#">입점신청</Link>
+          </li>
+          <li>
+            <Link to="#">제휴/광고 문의</Link>
+          </li>
+          <li>
+            <Link to="#">시공파트너 안내</Link>
+          </li>
+          <li>
+            <Link to="#">상품광고 소개</Link>
+          </li>
+          <li>
+            <Link to="#">고객의 소리</Link>
+          </li>
+        </Anchor>
+        <SectionLine />
+        <Infomation>
+          <CorpIntro>
             <ul>
-              <li>평일: 전체 문의 상담</li>
+              <li>(주)버킷플레이스</li>
+              <li>대표이사 이승재</li>
               <li>
-                토요일, 공휴일: 오늘의집 직접배송,
-                이사/시공/제품설치 문의 상담
+                서울 서초구 서초대로74길 4
+                삼성생명서초타워 25층, 27층
               </li>
-              <li>일요일: 휴무</li>
+
+              <li>contact@bucketplace.net</li>
+              <li>
+                사업자등록번호 119-86-91245{' '}
+                <Link to="#">
+                  <strong>사업자정보확인</strong>
+                </Link>
+              </li>
+
+              <li>
+                통신판매업신고번호
+                제2018-서울서초-0580호
+              </li>
             </ul>
-            <EctCustomer>
+            <p>
+              고객님이 현금결제한 금액에 대해
+              우리은행과 채무지급보증 계약을
+              체결하 여 안전거래를 보장하고
+              있습니다.
+            </p>
+          </CorpIntro>
+          <Certificate>
+            <li>
               <Link to="#">
-                카톡 상담(평일 09:00~18:00)
-              </Link>
-              <Link to="#">이메일 문의</Link>
-            </EctCustomer>
-          </Customer>
-          <SectionLine />
-          <Anchor>
-            <li>
-              <Link to="#">회사소개</Link>
-            </li>
-            <li>
-              <Link to="#">채용정보</Link>
-            </li>
-            <li>
-              <Link to="#">이용약관</Link>
-            </li>
-            <li>
-              <Link to="#" className="point">
-                개인정보처리방침
+                <img src={Isms} alt="" />
+                <div>
+                  <p>오늘의집 서비스 운영</p>
+                  <p>
+                    2021. 09. 08 ~ 2024. 09. 07
+                  </p>
+                </div>
               </Link>
             </li>
             <li>
-              <Link to="#">공지사항</Link>
-            </li>
-            <li>
-              <Link to="#">안전거래센터</Link>
-            </li>
-
-            <li>
-              <Link to="#">입점신청</Link>
-            </li>
-            <li>
-              <Link to="#">제휴/광고 문의</Link>
-            </li>
-            <li>
-              <Link to="#">시공파트너 안내</Link>
-            </li>
-            <li>
-              <Link to="#">상품광고 소개</Link>
-            </li>
-            <li>
-              <Link to="#">고객의 소리</Link>
-            </li>
-          </Anchor>
-          <SectionLine />
-          <Infomation>
-            <CorpIntro>
-              <ul>
-                <li>(주)버킷플레이스</li>
-                <li>대표이사 이승재</li>
-                <li>
-                  서울 서초구 서초대로74길 4
-                  삼성생명서초타워 25층, 27층
-                </li>
-
-                <li>contact@bucketplace.net</li>
-                <li>
-                  사업자등록번호 119-86-91245{' '}
-                  <Link to="#">
-                    <strong>사업자정보확인</strong>
-                  </Link>
-                </li>
-
-                <li>
-                  통신판매업신고번호
-                  제2018-서울서초-0580호
-                </li>
-              </ul>
-              <p>
-                고객님이 현금결제한 금액에 대해
-                우리은행과 채무지급보증 계약을
-                체결하 여 안전거래를 보장하고
-                있습니다.
-              </p>
-            </CorpIntro>
-            <Certificate>
-              <li>
-                <Link to="#">
-                  <img src={Isms} alt="" />
-                  <div>
-                    <p>오늘의집 서비스 운영</p>
-                    <p>
-                      2021. 09. 08 ~ 2024. 09. 07
-                    </p>
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to="#">
-                  <img src={Dnv} alt="" />
-                </Link>
-              </li>
-              <li>
-                <Link to="#">
-                  <img src={Pcr} alt="" />
-                </Link>
-              </li>
-            </Certificate>
-            <div>
-              <p>
-                (주)버킷플레이스는 통신판매중개자로
-                거래 당사자가 아니므로, 판매자가
-                등록한 상품정보 및 거래 등에 대해
-                책임을 지지 않습니다. 단,
-                (주)버킷플레이스가 판매자로 등록
-                판매한 상품은 판매자로서 책임을
-                부담합니다.
-              </p>
-            </div>
-            <SnsLink>
               <Link to="#">
-                <img src={SnsIconYoutube} alt="" />
+                <img src={Dnv} alt="" />
               </Link>
+            </li>
+            <li>
               <Link to="#">
-                <img
-                    src={SnsIconInstagram}
-                    alt=""
-                />
+                <img src={Pcr} alt="" />
               </Link>
-              <Link to="#">
-                <img src={SnsIconFacebook} alt="" />
-              </Link>
-              <Link to="#">
-                <img
-                    src={SnsIconKakaoStory}
-                    alt=""
-                />
-              </Link>
-              <Link to="#">
-                <img
-                    src={SnsIconNaverPost}
-                    alt=""
-                />
-              </Link>
-            </SnsLink>
-            <Copyright>
-              Copyright 2014. bucketplace, Co., Ltd.
-              All rights reserved.
-            </Copyright>
-          </Infomation>
-        </FooterInner>
-      </FooterArea>
+            </li>
+          </Certificate>
+          <div>
+            <p>
+              (주)버킷플레이스는 통신판매중개자로
+              거래 당사자가 아니므로, 판매자가
+              등록한 상품정보 및 거래 등에 대해
+              책임을 지지 않습니다. 단,
+              (주)버킷플레이스가 판매자로 등록
+              판매한 상품은 판매자로서 책임을
+              부담합니다.
+            </p>
+          </div>
+          <SnsLink>
+            <Link to="#">
+              <img src={SnsIconYoutube} alt="" />
+            </Link>
+            <Link to="#">
+              <img
+                src={SnsIconInstagram}
+                alt=""
+              />
+            </Link>
+            <Link to="#">
+              <img src={SnsIconFacebook} alt="" />
+            </Link>
+            <Link to="#">
+              <img
+                src={SnsIconKakaoStory}
+                alt=""
+              />
+            </Link>
+            <Link to="#">
+              <img
+                src={SnsIconNaverPost}
+                alt=""
+              />
+            </Link>
+          </SnsLink>
+          <Copyright>
+            Copyright 2014. bucketplace, Co., Ltd.
+            All rights reserved.
+          </Copyright>
+        </Infomation>
+      </FooterInner>
+    </FooterArea>
   );
 }
 const SectionLine = styled.div`

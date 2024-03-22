@@ -120,25 +120,13 @@ function SignupForm() {
       ...user,
       email: emailUse,
     };
+
     if (
-      user.email.trim() === '' ||
-      emailCheck(user.email)
+      user.nickname.trim() === '' ||
+      !signUpNickNameCheck(user.nickname)
     ) {
-      setHasEmail(false);
-      emailInputRef.current?.focus();
-      confirm = false;
-    }
-    if (SelectEmail.trim() === '') {
-      setHasEmailCheck(false);
-      emailCheckInputRef.current?.focus();
-      confirm = false;
-    }
-    if (
-      user.password.trim() === '' ||
-      !pwCheck(user.password)
-    ) {
-      setHasPassword(false);
-      passwordInputRef.current?.focus();
+      setHasNickName(false);
+      nickNameInputRef.current?.focus();
       confirm = false;
     }
     if (
@@ -150,13 +138,27 @@ function SignupForm() {
       confirm = false;
     }
     if (
-      user.nickname.trim() === '' ||
-      !signUpNickNameCheck(user.nickname)
+      user.password.trim() === '' ||
+      !pwCheck(user.password)
     ) {
-      setHasNickName(false);
-      nickNameInputRef.current?.focus();
+      setHasPassword(false);
+      passwordInputRef.current?.focus();
       confirm = false;
     }
+    if (SelectEmail.trim() === '') {
+      setHasEmailCheck(false);
+      emailCheckInputRef.current?.focus();
+      confirm = false;
+    }
+    if (
+      user.email.trim() === '' ||
+      emailCheck(user.email)
+    ) {
+      setHasEmail(false);
+      emailInputRef.current?.focus();
+      confirm = false;
+    }
+
     if (!confirm) {
       return;
     }

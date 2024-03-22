@@ -52,7 +52,7 @@ authInstance.interceptors.response.use(
           );
           originalRequest.headers[
             'authorization'
-            ] = `${accessToken}`;
+          ] = `${accessToken}`;
 
           return authInstance(originalRequest);
         } catch (refreshError) {

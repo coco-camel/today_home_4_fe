@@ -6,71 +6,71 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-      <HeaderWrap>
-        <HeaderTop>
-          <StickyHeader>
-            <MainHeader>
-              <Logo>
-                <Link to="/">
-                  <h1>
-                    <img src={HomeLogo} alt="" />
-                  </h1>
-                </Link>
-              </Logo>
-              <Nav>
-                <ul>
-                  <li>
-                    <Link to="/">쇼핑</Link>
-                  </li>
-                </ul>
-              </Nav>
-              <UserActs>
-                {/* 로그인 전 */}
-                <MemberShip>
-                  <Link to="/login">로그인</Link>
-                  <Link to="/signup">회원가입</Link>
-                </MemberShip>
-                {/* 로그인 후 */}
-                <MyPages
-                    style={{ display: 'none' }}
-                >
-                  <ScrapBookLink>
-                    <Link
-                        to=""
-                        aria-label="스크랩북 페이지 링크 버튼"
-                    ></Link>
-                  </ScrapBookLink>
-                  <MypageBtn>
-                    <button aria-label="마이페이지 링크 버튼"></button>
-                  </MypageBtn>
-                </MyPages>
-                <WriteBtn>
-                  <button>
-                    <span>글쓰기</span>
-                    <ArrowDwonIcon>
-                      <img
-                          src={ArroDownIcon}
-                          alt=""
-                      />
-                    </ArrowDwonIcon>
-                  </button>
-                </WriteBtn>
-              </UserActs>
-            </MainHeader>
-          </StickyHeader>
-        </HeaderTop>
-        <HeaderBottom>
-          <SubStickyHeader>
-            <SubHeader>
+    <HeaderWrap>
+      <HeaderTop>
+        <StickyHeader>
+          <MainHeader>
+            <Logo>
+              <Link to="/">
+                <h1>
+                  <img src={HomeLogo} alt="" />
+                </h1>
+              </Link>
+            </Logo>
+            <Nav>
               <ul>
                 <li>
-                  <Link to="/">쇼핑홈</Link>
+                  <Link to="/">쇼핑</Link>
                 </li>
               </ul>
-            </SubHeader>
-          </SubStickyHeader>
-        </HeaderBottom>
-      </HeaderWrap>
+            </Nav>
+            <UserActs>
+              {/* 로그인 전 */}
+              <MemberShip>
+                <Link to="/login">로그인</Link>
+                <Link to="/signup">회원가입</Link>
+              </MemberShip>
+              {/* 로그인 후 */}
+              <MyPages
+                style={{ display: 'none' }}
+              >
+                <ScrapBookLink>
+                  <Link
+                    to=""
+                    aria-label="스크랩북 페이지 링크 버튼"
+                  ></Link>
+                </ScrapBookLink>
+                <MypageBtn>
+                  <button aria-label="마이페이지 링크 버튼"></button>
+                </MypageBtn>
+              </MyPages>
+              <WriteBtn>
+                <button>
+                  <span>글쓰기</span>
+                  <ArrowDwonIcon>
+                    <img
+                      src={ArroDownIcon}
+                      alt=""
+                    />
+                  </ArrowDwonIcon>
+                </button>
+              </WriteBtn>
+            </UserActs>
+          </MainHeader>
+        </StickyHeader>
+      </HeaderTop>
+      <HeaderBottom>
+        <SubStickyHeader>
+          <SubHeader>
+            <ul>
+              <li>
+                <Link to="/">쇼핑홈</Link>
+              </li>
+            </ul>
+          </SubHeader>
+        </SubStickyHeader>
+      </HeaderBottom>
+    </HeaderWrap>
   );
 };
 
