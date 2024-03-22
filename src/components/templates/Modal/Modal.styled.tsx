@@ -18,12 +18,12 @@ export const ModalHeader = styled.div`
   width:100%; display:flex;
 `
 
-export const Dimmed = styled.div(({zIndex = 2000}:{zIndex :number}) => css`
+export const Dimmed = styled.div(() => css`
     position: fixed;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    ${zIndex && css`z-index: ${zIndex};`};
+    z-index: 2000;
 `);
