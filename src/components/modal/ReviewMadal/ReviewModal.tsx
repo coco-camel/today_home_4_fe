@@ -9,10 +9,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { selectiveproduct } from "../../../apis/productDetail";
 import { useParams } from "react-router-dom";
 import { reviewRegistration } from "../../../apis/review";
-import { ReivewInputData } from "./ReviewModal.interface";
+import { ReivewInputData } from "../../../interfaces/modal/ReviewModal.interface";
 import { number, string } from "prop-types";
 import { ReviewData } from "../../../interfaces/productDetail/productDetail.interface";
 import { login } from "../../../apis/login";
+import react from "@vitejs/plugin-react";
 
 const ReviewModal = () => {
   const [hoverIndex, setHoverIndex] = useState<number>(-1);

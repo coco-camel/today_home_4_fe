@@ -8,6 +8,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { router } from './routes/Router';
+import { Provider } from "react-redux";
+import store from "./redux/config/configStore";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -15,7 +17,9 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient();
 root.render(
   <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </QueryClientProvider>,
 );
 
