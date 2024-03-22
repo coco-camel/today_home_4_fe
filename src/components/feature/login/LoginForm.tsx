@@ -8,7 +8,7 @@ import {
 import {
   emailCheck,
   pwCheck,
-} from '../../common/regex/regex';
+} from '../../../utils/regex/regex';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './LoginFormStyle';
 
