@@ -7,7 +7,7 @@ export const Input = styled.input<{
   display: inline-block;
   width: 100%;
   margin: 0;
-  padding: 8px 15px 9pxexport;
+  padding: 8px 15px 9px;
   border: ${({ $hasValue, $hasCheck }) =>
     $hasValue || $hasCheck
       ? '1px solid #dbdbdb'
