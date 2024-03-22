@@ -1,4 +1,4 @@
-import { instance } from './axios';
+import { authInstance, instance } from './axios';
 import type {
   SignUpUser,
   LoginUser,
