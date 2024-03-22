@@ -4,7 +4,8 @@ export interface SignUpUser {
   passwordCheck: string;
   nickname: string;
 }
+
 export interface LoginUser {
-  email: string;
+  username: string;
   password: string;
 }

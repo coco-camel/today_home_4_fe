@@ -1,30 +1,47 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useRef, useState } from 'react';
 import type { SignUpUser } from '../interfaces/user/user.interface';
 import { useSignUp } from '../hooks/mutations/user/userMutation';
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  Navigate,
+  useNavigate,
+} from 'react-router-dom';
 import HomeIcon from '../assets/HomeIcon';
 import styled from 'styled-components';
+import {
+  signUpNickNameCheck,
+  pwCheck,
+  signUpEmailcheck,
+  signUpIdcheck,
+  emailCheck,
+} from '../components/common/regex/regex';
 
-const Input = styled.input`
+const Input = styled.input<{
+  $hasValue: boolean;
+  $hasCheck: boolean;
+}>`
   display: inline-block;
   width: 100%;
   margin: 0;
   padding: 8px 15px 9px;
-  border: 1px solid #dbdbdb;
-  background-color: #fff;
+  border: ${({ $hasValue, $hasCheck }) =>
+    $hasValue || $hasCheck
+      ? '1px solid #dbdbdb'
+      : '1px solid red'};
   color: #000;
   box-sizing: border-box;
   font-size: 15px;
   line-height: 21px;
   position: relative;
   border-radius: 4px;
+  background-color: #fff;
   &:focus {
-    box-shadow: 0 0 0 3px rgba(53, 197, 240, 0.3);
-    z-index: 1;
+    box-shadow: ${({ $hasValue, $hasCheck }) =>
+      $hasValue || $hasCheck
+        ? '0 0 0 3px rgba(53, 197, 240, 0.3)'
+        : '0 0 0 3px rgba(255, 119, 119, 0.3)'};
+
+    z-index: 2;
   }
 `;
 const SignContainer = styled.div`
@@ -52,7 +69,7 @@ const Button = styled.button`
   color: #fff;
   box-sizing: border-box;
   &:hover {
-    filter: brightness(0.9);
+    background: #009fce;
   }
 `;
 const LoginLink = styled(Link)`
@@ -74,13 +91,18 @@ const BorderLine = styled.div`
 const SignUpInputWarpper = styled.div`
   margin-bottom: 30px;
 `;
-const InputLabel = styled.div`
+const InputLabel = styled.div<{
+  $hasCheck: boolean;
+}>`
   margin-bottom: 12px;
   font-size: 16px;
   line-height: 20px;
   font-weight: 700;
-  color: rgb(47, 52, 56);
   letter-spacing: -0.3px;
+  color: ${({ $hasCheck }) =>
+    $hasCheck
+      ? 'rgb(47, 52, 56)'
+      : 'rgb(255, 119, 119)'};
 `;
 const InputGuide = styled.div`
   margin-bottom: 10px;
@@ -109,10 +131,15 @@ const SignUpSelectBox = styled.div`
     color: #dbdbdb;
   }
 `;
-const SignSelectBox = styled.select`
+const SignSelectBox = styled.select<{
+  $hasValue: boolean;
+}>`
   display: block;
   padding: 8px 15px 9px;
-  border: 1px solid #dbdbdb;
+  border: ${({ $hasValue }) =>
+    $hasValue
+      ? '1px solid #dbdbdb'
+      : '1px solid red'};
   background-color: #fff;
   color: #000;
   box-sizing: border-box;
@@ -130,6 +157,13 @@ const CustomEmailButton = styled.button`
 const CustomEmailContainer = styled.div`
   position: relative;
 `;
+const ErrorMassage = styled.div`
+  padding-top: 10px;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgb(255, 119, 119);
+`;
+
 function SignUp() {
   const [user, setUser] = useState<SignUpUser>({
     email: '',
@@ -142,42 +176,91 @@ function SignUp() {
   const [customEmail, setCustomEmail] =
     useState('');
   const signUpMutation = useSignUp();
-  const inputRef =
+
+  const [hasEmail, setHasEmail] =
+    useState<boolean>(true);
+  const [hasEmailCheck, setHasEmailCheck] =
+    useState<boolean>(true);
+  const [hasPassword, setHasPassword] =
+    useState<boolean>(true);
+  const [hasPasswordCheck, setHasPasswordCheck] =
+    useState<boolean>(true);
+  const [hasNickName, setHasNickName] =
+    useState<boolean>(true);
+
+  const emailInputRef =
     useRef<HTMLInputElement | null>(null);
+  const emailCheckInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const passwordInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const passwordCheckInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const nickNameInputRef =
+    useRef<HTMLInputElement | null>(null);
+
+  const navigate = useNavigate();
 
   const handleEmailChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    if (signUpIdcheck(value)) {
+      return;
+    }
     if (value.includes('@')) {
       await setSelectEmail('직접입력');
-      inputRef.current?.focus();
+      emailCheckInputRef.current?.focus();
     } else {
       setUser({ ...user, email: value });
+      setHasEmail(false);
     }
+    !value
+      ? setHasEmail(false)
+      : setHasEmail(true);
   };
-  const handlePasswordChange = (
+  const handlePasswordChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
-    setUser({ ...user, password: value });
+    await setUser({ ...user, password: value });
+    !value
+      ? setHasPassword(false)
+      : pwCheck(user.password)
+        ? setHasPassword(true)
+        : setHasPassword(false);
+    if (user.passwordCheck) {
+      setHasPasswordCheck(false);
+    }
   };
   const handlePasswordCheckChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
     setUser({ ...user, passwordCheck: value });
+    if (value === user.password) {
+      setHasPasswordCheck(true);
+    } else {
+      setHasPasswordCheck(false);
+    }
   };
+
   const handleNicknameChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
     setUser({ ...user, nickname: value });
+    !value
+      ? setHasNickName(false)
+      : signUpNickNameCheck(user.nickname)
+        ? setHasNickName(true)
+        : setHasNickName(false);
   };
   const handleSignUpClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
+    let confirm = true;
     const emailUse =
       SelectEmail === '직접입력'
         ? `${user.email}@${customEmail}`
@@ -186,14 +269,55 @@ function SignUp() {
       ...user,
       email: emailUse,
     };
-    console.log(confirmUser);
+    if (
+      user.email.trim() === '' ||
+      emailCheck(user.email)
+    ) {
+      setHasEmail(false);
+      emailInputRef.current?.focus();
+      confirm = false;
+    }
+    if (SelectEmail.trim() === '') {
+      setHasEmailCheck(false);
+      emailCheckInputRef.current?.focus();
+      confirm = false;
+    }
+    if (
+      user.password.trim() === '' ||
+      !pwCheck(user.password)
+    ) {
+      setHasPassword(false);
+      passwordInputRef.current?.focus();
+      confirm = false;
+    }
+    if (
+      user.passwordCheck.trim() === '' ||
+      !pwCheck(user.passwordCheck)
+    ) {
+      setHasPasswordCheck(false);
+      passwordCheckInputRef.current?.focus();
+      confirm = false;
+    }
+    if (
+      user.nickname.trim() === '' ||
+      !signUpNickNameCheck(user.nickname)
+    ) {
+      setHasNickName(false);
+      nickNameInputRef.current?.focus();
+      confirm = false;
+    }
+    if (!confirm) {
+      return;
+    }
     signUpMutation.mutate(confirmUser);
+    navigate('/login');
   };
 
   const handleEmailSelectChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     let { value } = e.target;
+
     setSelectEmail(value);
   };
 
@@ -202,6 +326,11 @@ function SignUp() {
   ) => {
     const { value } = e.target;
     setCustomEmail(value);
+    !value
+      ? setHasEmailCheck(false)
+      : signUpEmailcheck(customEmail)
+        ? setHasEmailCheck(true)
+        : setHasEmailCheck(false);
   };
 
   const handleCustomEmailResetClick = (
@@ -209,7 +338,9 @@ function SignUp() {
   ) => {
     e.preventDefault();
     setSelectEmail('');
+    setCustomEmail('');
   };
+
   return (
     <SignLayoutContainer>
       <Link to="/">
@@ -220,23 +351,30 @@ function SignUp() {
         <BorderLine></BorderLine>
         <form>
           <SignUpInputWarpper>
-            <InputLabel>이메일</InputLabel>
+            <InputLabel $hasCheck={hasEmail}>
+              이메일
+            </InputLabel>
             <SignUpSelectBox>
               <Input
                 type="text"
                 value={user.email}
                 onChange={handleEmailChange}
-                placeholder="이메일"
+                $hasCheck={hasEmail}
+                $hasValue={signUpIdcheck(
+                  user.email,
+                )}
+                ref={emailInputRef}
               />
               <span>@</span>
               {SelectEmail !== '직접입력' ? (
                 <SignSelectBox
-                  className="emailBox"
                   onChange={
                     handleEmailSelectChange
                   }
+                  value={SelectEmail}
+                  $hasValue={hasEmail}
                 >
-                  <option value="">
+                  <option value="" disabled>
                     선택해주세요
                   </option>
                   <option value="naver.com">
@@ -257,11 +395,15 @@ function SignUp() {
                   <Input
                     type="text"
                     value={customEmail}
-                    ref={inputRef}
+                    ref={emailCheckInputRef}
                     onChange={
                       handleCustomEmailChange
                     }
                     placeholder="입력해주세요"
+                    $hasCheck={hasEmailCheck}
+                    $hasValue={signUpEmailcheck(
+                      customEmail,
+                    )}
                   />
                   <CustomEmailButton
                     onClick={
@@ -276,7 +418,14 @@ function SignUp() {
           </SignUpInputWarpper>
 
           <SignUpInputWarpper>
-            <InputLabel>비밀번호</InputLabel>
+            <InputLabel
+              $hasCheck={
+                hasPassword ||
+                pwCheck(user.password)
+              }
+            >
+              비밀번호
+            </InputLabel>
             <InputGuide>
               영문, 숫자를 포함한 8자 이상의
               비밀번호를 입력해주세요.
@@ -286,19 +435,60 @@ function SignUp() {
               value={user.password}
               onChange={handlePasswordChange}
               placeholder="비밀번호"
+              $hasCheck={hasPassword}
+              $hasValue={pwCheck(user.password)}
+              ref={passwordInputRef}
             />
+            {user.password &&
+              !pwCheck(user.password) && (
+                <ErrorMassage>
+                  영문 대, 소문자 숫자를 포함하여
+                  8자 이상이어야 합니다.
+                </ErrorMassage>
+              )}
           </SignUpInputWarpper>
           <SignUpInputWarpper>
-            <InputLabel>비밀번호 확인</InputLabel>
+            {/* 추가작업 필요 */}
+            <InputLabel
+              $hasCheck={
+                hasPasswordCheck ||
+                (user.passwordCheck !== '' &&
+                  user.password ===
+                    user.passwordCheck)
+              }
+            >
+              비밀번호 확인
+            </InputLabel>
             <Input
               type="password"
               value={user.passwordCheck}
               onChange={handlePasswordCheckChange}
               placeholder="비밀번호 확인"
+              $hasCheck={hasPasswordCheck}
+              $hasValue={
+                user.passwordCheck !== '' &&
+                user.password ===
+                  user.passwordCheck
+              }
+              ref={passwordCheckInputRef}
             />
+            {!hasPasswordCheck &&
+              user.password !==
+                user.passwordCheck && (
+                <ErrorMassage>
+                  비밀번호가 일치하지 않습니다.
+                </ErrorMassage>
+              )}
           </SignUpInputWarpper>
           <SignUpInputWarpper>
-            <InputLabel>닉네임</InputLabel>
+            <InputLabel
+              $hasCheck={
+                hasNickName ||
+                signUpNickNameCheck(user.nickname)
+              }
+            >
+              닉네임
+            </InputLabel>
             <InputGuide>
               다른 유저와 겹치지 않도록
               입력해주세요 (2~20자)
@@ -308,6 +498,11 @@ function SignUp() {
               value={user.nickname}
               onChange={handleNicknameChange}
               placeholder="별명 (2~20자)"
+              $hasCheck={hasNickName}
+              $hasValue={signUpNickNameCheck(
+                user.nickname,
+              )}
+              ref={nickNameInputRef}
             />
           </SignUpInputWarpper>
           <Button onClick={handleSignUpClick}>
