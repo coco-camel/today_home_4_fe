@@ -8,7 +8,7 @@ import { Product } from '../../interfaces/product/product.interface';
 
 const Products = () => {
   const [isFreeDelivery, setIsFreeDelivery] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const getProductAll = async () => {
     const { data } = await productAPI.getProductAll();
     return data.data.products;
