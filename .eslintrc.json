@@ -12,7 +12,8 @@
   "parser": "@typescript-eslint/parser", // ESLint 파서를 TypeScript용으로 설정
   "parserOptions": {
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
+      "tsx": true
     },
     "ecmaVersion": 2021,
     "sourceType": "module"
