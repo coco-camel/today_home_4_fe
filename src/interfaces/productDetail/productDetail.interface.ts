@@ -7,6 +7,3 @@ export interface ReviewData {
 export interface ModalState {
   isOpen: boolean;
 }
-
-
-
