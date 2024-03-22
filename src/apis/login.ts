@@ -19,7 +19,7 @@ export const signUp = async (
 };
 export const login = async (user: LoginUser) => {
   try {
-    const res = await instance.post(
+    const res = await authInstance.post(
       '/api/v1/members/signin',
       user,
     );

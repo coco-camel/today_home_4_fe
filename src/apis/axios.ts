@@ -7,6 +7,7 @@ export const instance = axios.create({
 
 export const authInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_DATA,
+  withCredentials: true,
 });
 
 authInstance.interceptors.request.use(
@@ -16,7 +17,7 @@ authInstance.interceptors.request.use(
     );
     if (token) {
       config.headers['Authorization'] =
-        `Bearer ${token}`;
+        `${token}`;
     }
     return config;
   },
@@ -42,9 +43,6 @@ authInstance.interceptors.response.use(
         try {
           const response = await instance.post(
             '/api/v1/members/reissue',
-            {
-              refreshToken,
-            },
           );
 
           const { accessToken } = response.data;
