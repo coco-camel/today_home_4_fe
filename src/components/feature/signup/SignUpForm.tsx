@@ -1,6 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { useSignUp } from '../../../hooks/mutations/user/userMutation';
-import { Link, useNavigate } from 'react-router-dom';
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom';
 import {
   emailCheck,
   pwCheck,
@@ -20,27 +23,40 @@ function SignupForm() {
     passwordCheck: '',
     nickname: '',
   });
-  const [SelectEmail, setSelectEmail] = useState('');
-  const [customEmail, setCustomEmail] = useState('');
+  const [SelectEmail, setSelectEmail] =
+    useState('');
+  const [customEmail, setCustomEmail] =
+    useState('');
   const signUpMutation = useSignUp();
 
   const [hasEmail, setHasEmail] = useState(true);
-  const [hasEmailCheck, setHasEmailCheck] = useState(true);
-  const [hasPassword, setHasPassword] = useState(true);
-  const [hasPasswordCheck, setHasPasswordCheck] = useState(true);
-  const [hasNickName, setHasNickName] = useState(true);
+  const [hasEmailCheck, setHasEmailCheck] =
+    useState(true);
+  const [hasPassword, setHasPassword] =
+    useState(true);
+  const [hasPasswordCheck, setHasPasswordCheck] =
+    useState(true);
+  const [hasNickName, setHasNickName] =
+    useState(true);
 
   // const [nickNameCheck, setNickNameCheck] = useState(true);
 
-  const emailInputRef = useRef<HTMLInputElement | null>(null);
-  const emailCheckInputRef = useRef<HTMLInputElement | null>(null);
-  const passwordInputRef = useRef<HTMLInputElement | null>(null);
-  const passwordCheckInputRef = useRef<HTMLInputElement | null>(null);
-  const nickNameInputRef = useRef<HTMLInputElement | null>(null);
+  const emailInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const emailCheckInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const passwordInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const passwordCheckInputRef =
+    useRef<HTMLInputElement | null>(null);
+  const nickNameInputRef =
+    useRef<HTMLInputElement | null>(null);
 
   const navigate = useNavigate();
 
-  const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { value } = e.target;
     if (signUpIdcheck(value)) {
       return;
@@ -56,9 +72,13 @@ function SignupForm() {
       }));
       setHasEmail(false);
     }
-    !value ? setHasEmail(false) : setHasEmail(true);
+    !value
+      ? setHasEmail(false)
+      : setHasEmail(true);
   };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { value } = e.target;
     setUser((prev) => ({
       ...prev,
@@ -87,7 +107,9 @@ function SignupForm() {
     }
   };
 
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNicknameChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { value } = e.target;
     setUser({ ...user, nickname: value });
     !value
@@ -103,7 +125,9 @@ function SignupForm() {
       });
     }
   };
-  const handleSignUpClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSignUpClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     e.preventDefault();
     let confirm = true;
     const emailUse =
@@ -115,17 +139,26 @@ function SignupForm() {
       email: emailUse,
     };
 
-    if (user.nickname.trim() === '' || !signUpNickNameCheck(user.nickname)) {
+    if (
+      user.nickname.trim() === '' ||
+      !signUpNickNameCheck(user.nickname)
+    ) {
       setHasNickName(false);
       nickNameInputRef.current?.focus();
       confirm = false;
     }
-    if (user.passwordCheck.trim() === '' || !pwCheck(user.passwordCheck)) {
+    if (
+      user.passwordCheck.trim() === '' ||
+      !pwCheck(user.passwordCheck)
+    ) {
       setHasPasswordCheck(false);
       passwordCheckInputRef.current?.focus();
       confirm = false;
     }
-    if (user.password.trim() === '' || !pwCheck(user.password)) {
+    if (
+      user.password.trim() === '' ||
+      !pwCheck(user.password)
+    ) {
       setHasPassword(false);
       passwordInputRef.current?.focus();
       confirm = false;
@@ -135,7 +168,10 @@ function SignupForm() {
       emailCheckInputRef.current?.focus();
       confirm = false;
     }
-    if (user.email.trim() === '' || emailCheck(user.email)) {
+    if (
+      user.email.trim() === '' ||
+      emailCheck(user.email)
+    ) {
       setHasEmail(false);
       emailInputRef.current?.focus();
       confirm = false;
@@ -148,13 +184,17 @@ function SignupForm() {
     navigate('/login');
   };
 
-  const handleEmailSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleEmailSelectChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     const { value } = e.target;
 
     setSelectEmail(value);
   };
 
-  const handleCustomEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCustomEmailChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { value } = e.target;
     setCustomEmail(value);
     !value
@@ -183,30 +223,44 @@ function SignupForm() {
         <S.BorderLine></S.BorderLine>
         <form>
           <S.SignUpInputWarpper>
-            <S.InputLabel $hasCheck={hasEmail}>이메일</S.InputLabel>
+            <S.InputLabel $hasCheck={hasEmail}>
+              이메일
+            </S.InputLabel>
             <S.SignUpSelectBox>
               <S.Input
                 type="text"
                 value={user.email}
                 onChange={handleEmailChange}
                 $hasCheck={hasEmail}
-                $hasValue={signUpIdcheck(user.email)}
+                $hasValue={signUpIdcheck(
+                  user.email,
+                )}
                 ref={emailInputRef}
               />
               <span>@</span>
               {SelectEmail !== '직접입력' ? (
                 <S.SignSelectBox
-                  onChange={handleEmailSelectChange}
+                  onChange={
+                    handleEmailSelectChange
+                  }
                   value={SelectEmail}
                   $hasValue={hasEmail}
                 >
                   <option value="" disabled>
                     선택해주세요
                   </option>
-                  <option value="naver.com">naver.com</option>
-                  <option value="gmail.com">gmail.com</option>
-                  <option value="icloud.com">icloud.com</option>
-                  <option value="직접입력">직접입력</option>
+                  <option value="naver.com">
+                    naver.com
+                  </option>
+                  <option value="gmail.com">
+                    gmail.com
+                  </option>
+                  <option value="icloud.com">
+                    icloud.com
+                  </option>
+                  <option value="직접입력">
+                    직접입력
+                  </option>
                 </S.SignSelectBox>
               ) : (
                 <S.CustomEmailContainer>
@@ -214,12 +268,20 @@ function SignupForm() {
                     type="text"
                     value={customEmail}
                     ref={emailCheckInputRef}
-                    onChange={handleCustomEmailChange}
+                    onChange={
+                      handleCustomEmailChange
+                    }
                     placeholder="입력해주세요"
                     $hasCheck={hasEmailCheck}
-                    $hasValue={signUpEmailcheck(customEmail)}
+                    $hasValue={signUpEmailcheck(
+                      customEmail,
+                    )}
                   />
-                  <S.CustomEmailButton onClick={handleCustomEmailResetClick}>
+                  <S.CustomEmailButton
+                    onClick={
+                      handleCustomEmailResetClick
+                    }
+                  >
                     x
                   </S.CustomEmailButton>
                 </S.CustomEmailContainer>
@@ -228,11 +290,17 @@ function SignupForm() {
           </S.SignUpInputWarpper>
 
           <S.SignUpInputWarpper>
-            <S.InputLabel $hasCheck={hasPassword || pwCheck(user.password)}>
+            <S.InputLabel
+              $hasCheck={
+                hasPassword ||
+                pwCheck(user.password)
+              }
+            >
               비밀번호
             </S.InputLabel>
             <S.InputGuide>
-              영문, 숫자를 포함한 8자 이상의 비밀번호를 입력해주세요.
+              영문, 숫자를 포함한 8자 이상의
+              비밀번호를 입력해주세요.
             </S.InputGuide>
             <S.Input
               type="password"
@@ -243,11 +311,13 @@ function SignupForm() {
               $hasValue={pwCheck(user.password)}
               ref={passwordInputRef}
             />
-            {user.password && !pwCheck(user.password) && (
-              <S.ErrorMassage>
-                영문 대, 소문자 숫자를 포함하여 8자 이상이어야 합니다.
-              </S.ErrorMassage>
-            )}
+            {user.password &&
+              !pwCheck(user.password) && (
+                <S.ErrorMassage>
+                  영문 대, 소문자 숫자를 포함하여
+                  8자 이상이어야 합니다.
+                </S.ErrorMassage>
+              )}
           </S.SignUpInputWarpper>
           <S.SignUpInputWarpper>
             {/* 추가작업 필요 */}
@@ -255,7 +325,8 @@ function SignupForm() {
               $hasCheck={
                 hasPasswordCheck ||
                 (user.passwordCheck !== '' &&
-                  user.password === user.passwordCheck)
+                  user.password ===
+                    user.passwordCheck)
               }
             >
               비밀번호 확인
@@ -268,22 +339,31 @@ function SignupForm() {
               $hasCheck={hasPasswordCheck}
               $hasValue={
                 user.passwordCheck !== '' &&
-                user.password === user.passwordCheck
+                user.password ===
+                  user.passwordCheck
               }
               ref={passwordCheckInputRef}
             />
-            {!hasPasswordCheck && user.password !== user.passwordCheck && (
-              <S.ErrorMassage>비밀번호가 일치하지 않습니다.</S.ErrorMassage>
-            )}
+            {!hasPasswordCheck &&
+              user.password !==
+                user.passwordCheck && (
+                <S.ErrorMassage>
+                  비밀번호가 일치하지 않습니다.
+                </S.ErrorMassage>
+              )}
           </S.SignUpInputWarpper>
           <S.SignUpInputWarpper>
             <S.InputLabel
-              $hasCheck={hasNickName || signUpNickNameCheck(user.nickname)}
+              $hasCheck={
+                hasNickName ||
+                signUpNickNameCheck(user.nickname)
+              }
             >
               닉네임
             </S.InputLabel>
             <S.InputGuide>
-              다른 유저와 겹치지 않도록 입력해주세요 (2~20자)
+              다른 유저와 겹치지 않도록
+              입력해주세요 (2~20자)
             </S.InputGuide>
             <S.Input
               type="text"
@@ -291,15 +371,21 @@ function SignupForm() {
               onChange={handleNicknameChange}
               placeholder="별명 (2~20자)"
               $hasCheck={hasNickName}
-              $hasValue={signUpNickNameCheck(user.nickname)}
+              $hasValue={signUpNickNameCheck(
+                user.nickname,
+              )}
               ref={nickNameInputRef}
             />
           </S.SignUpInputWarpper>
-          <S.Button onClick={handleSignUpClick}>회원가입하기</S.Button>
+          <S.Button onClick={handleSignUpClick}>
+            회원가입하기
+          </S.Button>
         </form>
         <S.LoginNavigate>
           <p>이미 아이디가 있으신가요?</p>
-          <S.LoginLink to="/login">로그인</S.LoginLink>
+          <S.LoginLink to="/login">
+            로그인
+          </S.LoginLink>
         </S.LoginNavigate>
       </S.SignContainer>
     </S.SignLayoutContainer>

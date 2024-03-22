@@ -10,7 +10,7 @@ export interface LoginUser {
   password: string;
 }
 
-export interface duplicateTestCheck {
+export interface DuplicateTestCheck {
   type: string;
   value: string;
 }
