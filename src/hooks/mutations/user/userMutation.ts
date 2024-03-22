@@ -18,7 +18,7 @@ export const useLogin = () => {
     mutationFn: login,
     onSuccess: (data) => {
       localStorage.setItem(
-        'accesstoken',
+        'accessToken',
         data?.headers['authorization'],
       );
     },
