@@ -7,11 +7,10 @@ import { Link } from 'react-router-dom';
 import { Product } from '../../interfaces/product/product.interface';
 
 const Products = () => {
-  const [isFreeDelivery, setIsFreeDelivery] =
-    useState(false);
+  const [isFreeDelivery, setIsFreeDelivery] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const getProductAll = async () => {
-    const { data } =
-      await productAPI.getProductAll();
+    const { data } = await productAPI.getProductAll();
     return data.data.products;
   };
   const { data: products } = useQuery({
@@ -23,9 +22,7 @@ const Products = () => {
     return <div>Loading...</div>;
   }
 
-  const handleFreeDeliveryClick = (
-    isFreeDelivery: boolean,
-  ) => {
+  const handleFreeDeliveryClick = (isFreeDelivery: boolean) => {
     setIsFreeDelivery(!isFreeDelivery);
   };
 
@@ -33,9 +30,7 @@ const Products = () => {
     <ProductSection>
       <h1>인기 상품</h1>
       <FilterButton
-        onFreeDeliveryClick={
-          handleFreeDeliveryClick
-        }
+        onFreeDeliveryClick={handleFreeDeliveryClick}
         isTrue={isFreeDelivery}
       />
       <ProductWrap>
@@ -44,14 +39,9 @@ const Products = () => {
             <ProductItem key={product.productId}>
               <Link to="#">
                 <ImgWrap>
-                  <img
-                    src={product.imageUrl}
-                    alt=""
-                  />
+                  <img src={product.imageUrl} alt="" />
                   <ScrapBtn>
-                    <button>
-                      
-                    </button>
+                    <button></button>
                   </ScrapBtn>
                 </ImgWrap>
                 <ItemInfo>
@@ -67,10 +57,7 @@ const Products = () => {
                     <span>
                       {product.price
                         .toString()
-                        .replace(
-                          /\B(?=(\d{3})+(?!\d))/g,
-                          ',',
-                        )}
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     </span>
                   </ItemPrice>
                   <ItemState>
@@ -80,9 +67,7 @@ const Products = () => {
                     </p>
                   </ItemState>
                   <ItemBadgeWrap>
-                    <DeliveryBadge>
-                      무료배송
-                    </DeliveryBadge>
+                    <DeliveryBadge>무료배송</DeliveryBadge>
                     <SaleBadge>특가</SaleBadge>
                   </ItemBadgeWrap>
                 </ItemInfo>
@@ -137,7 +122,16 @@ const ImgWrap = styled.picture`
     width: 100%;
   }
 `;
-const ScrapBtn = styled.div``;
+const ScrapBtn = styled.div`
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: 12px;
+  right: 12px;
+  background: red;
+  z-index: 2;
+  transition: opacity 0.1s;
+`;
 const ItemInfo = styled.div`
   padding: 9px 10px;
 `;
