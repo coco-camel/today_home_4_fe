@@ -23,6 +23,7 @@ export const login = async (user: LoginUser) => {
       '/api/v1/members/signin',
       user,
     );
+    console.log(res);
     return res;
   } catch (error) {
     console.log(error);

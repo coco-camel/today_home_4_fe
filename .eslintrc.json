@@ -1,18 +1,26 @@
 {
   "env": {
-    "node": true,
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended" // TypeScript 규칙 확장 추가
   ],
+  "parser": "@typescript-eslint/parser", // ESLint 파서를 TypeScript용으로 설정
   "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": [
+    "react",
+    "@typescript-eslint" // TypeScript 플러그인 사용 설정
+  ],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
