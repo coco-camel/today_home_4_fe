@@ -2,34 +2,91 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import FilterButton from './FilterButton';
 import productAPI from '../../apis/product';
-import { useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  // useInfiniteQuery,
+  useQuery,
+  // useQueryClient,
+} from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Product } from '../../interfaces/product/product.interface';
+import bookMarkAPI from '../../apis/bookmark';
 
 const Products = () => {
-  const [isFreeDelivery, setIsFreeDelivery] =
-    useState(false);
-  // const [modalOpen, setModalOpen] = useState(false);
+  // 전체상품 조회
   const getProductAll = async () => {
     const { data } =
       await productAPI.getProductAll();
     return data.data.products;
+    // const { respnseDto, hasNext } = data.data;
+    // return {
+    //   result: respnseDto,
+    //   nextPage: pageParam + 1,
+    //   isLast: !hasNext,
+    // };
   };
   const { data: products } = useQuery({
     queryKey: ['getProductsAll'],
     queryFn: getProductAll,
   });
+  // 북마크 등록
+  const addBookMark = async (
+    productId: number,
+  ) => {
+    const { data } =
+      await bookMarkAPI.addBookMark(productId);
+    return data.data;
+  };
+  const { mutate: createMutate } = useMutation({
+    mutationFn: addBookMark,
+    onSuccess: () => {},
+  });
+  // 북마크 삭제
+  // const delBookMark = async(
+  //   productId:number,
+  // ) => {
+  //   const { data } =
+  //     await bookMarkAPI.delBookMark(productId);
+  //   return data.data;
+  // }
+  //  const { mutate: deleteMutate } = useMutation({
+  //    mutationFn: delBookMark,
+  //    onSuccess: () => {},
+  //  });
+  const handleBookmarkClick = (
+    productId: number,
+  ) => {
+    createMutate(productId);
+    //  deleteMutate(productId);
+  };
+  //무한 스크롤
+  // const { data } = useInfiniteQuery({
+  //   queryKey: ['getProductsAll'],
+  //   queryFn: ({ pageParam = 1 }) =>
+  //     getProductAll(pageParam),
+  //   getNextPageParam: (lastPage) => {
+  //     if (!lastPage.isLast)
+  //       return lastPage.nextPage;
+  //     return undefined;
+  //   },
+  //   refetchOnWindowFocus: false,
+  //   refetchOnMount: true,
+  //   retry: 1,
+  // });
 
-  if (!products) {
-    return <div>Loading...</div>;
-  }
-
+  // 무료배송 분류
+  const [isFreeDelivery, setIsFreeDelivery] =
+    useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const handleFreeDeliveryClick = (
     isFreeDelivery: boolean,
   ) => {
     setIsFreeDelivery(!isFreeDelivery);
   };
 
+  if (!products) {
+    return <div>Loading...</div>;
+  }
   return (
     <ProductSection>
       <h1>인기 상품</h1>
@@ -43,49 +100,56 @@ const Products = () => {
         <ProductList>
           {products.map((product: Product) => (
             <ProductItem key={product.productId}>
-              <Link to="#">
-                <ImgWrap>
-                  <img
-                    src={product.imageUrl}
-                    alt=""
-                  />
-                  <ScrapBtn>
-                    <button></button>
-                  </ScrapBtn>
-                </ImgWrap>
-                <ItemInfo>
-                  <ItemInfoHeader>
-                    <em>{product.brand}</em>
-                    <span>{product.name}</span>
-                  </ItemInfoHeader>
-                  <ItemPrice>
-                    <span>
-                      {product.discount}
-                      <span>%</span>
-                    </span>
-                    <span>
-                      {product.price
-                        .toString()
-                        .replace(
-                          /\B(?=(\d{3})+(?!\d))/g,
-                          ',',
-                        )}
-                    </span>
-                  </ItemPrice>
-                  <ItemState>
-                    <p>
-                      <span>4.8</span>
-                      <span>리뷰 33,361</span>
-                    </p>
-                  </ItemState>
-                  <ItemBadgeWrap>
-                    <DeliveryBadge>
-                      무료배송
-                    </DeliveryBadge>
-                    <SaleBadge>특가</SaleBadge>
-                  </ItemBadgeWrap>
-                </ItemInfo>
-              </Link>
+              <Link
+                to={`detail/${product.productId}`}
+              ></Link>
+              <ImgWrap>
+                <img
+                  src={product.imageUrl}
+                  alt=""
+                />
+                <ScrapBtn>
+                  <button
+                    onClick={() =>
+                      handleBookmarkClick(
+                        product.productId,
+                      )
+                    }
+                  ></button>
+                </ScrapBtn>
+              </ImgWrap>
+              <ItemInfo>
+                <ItemInfoHeader>
+                  <em>{product.brand}</em>
+                  <span>{product.name}</span>
+                </ItemInfoHeader>
+                <ItemPrice>
+                  <span>
+                    {product.discount}
+                    <span>%</span>
+                  </span>
+                  <span>
+                    {product.price
+                      .toString()
+                      .replace(
+                        /\B(?=(\d{3})+(?!\d))/g,
+                        ',',
+                      )}
+                  </span>
+                </ItemPrice>
+                <ItemState>
+                  <p>
+                    <span>4.8</span>
+                    <span>리뷰 33,361</span>
+                  </p>
+                </ItemState>
+                <ItemBadgeWrap>
+                  <DeliveryBadge>
+                    무료배송
+                  </DeliveryBadge>
+                  <SaleBadge>특가</SaleBadge>
+                </ItemBadgeWrap>
+              </ItemInfo>
             </ProductItem>
           ))}
         </ProductList>
@@ -114,7 +178,17 @@ const ProductList = styled.ul`
   gap: 30px 20px;
 `;
 const ProductItem = styled.li`
-  a:hover {
+  position: relative;
+  a {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+  }
+  &:hover {
     img {
       transform: translate(-50%, -50%) scale(1.1);
     }
@@ -137,14 +211,19 @@ const ImgWrap = styled.picture`
   }
 `;
 const ScrapBtn = styled.div`
+  button {
+    width: 24px;
+    height: 24px;
+    background: red;
+  }
+  display: block;
   position: absolute;
-  width: 24px;
-  height: 24px;
+
   bottom: 12px;
   right: 12px;
-  background: red;
-  z-index: 2;
+  z-index: 11;
   transition: opacity 0.1s;
+  cursor: pointer;
 `;
 const ItemInfo = styled.div`
   padding: 9px 10px;
