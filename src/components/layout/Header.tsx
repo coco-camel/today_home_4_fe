@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ArroDownIcon from '../../assets/icons/simple-line-icons_arrow-up.svg';
 import HomeLogo from '../../assets/icons/homelogo.svg';
+import ScrapIcon from '../../assets/icons/scrapIcon.svg';
 import { Link } from 'react-router-dom';
-import { useLogout } from '../../hooks/mutations/user/userMutation';
+import HeaderModal from '../modal/headerModal/HeaderModal';
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const isLogined: string = localStorage.getItem(
     'accessToken',
   ) as string;
-  const logoutMutation = useLogout();
-  const handleLogoutClick = () => {
-    logoutMutation.mutate();
+
+  const HandleMyPageClick = () => {
+    setIsOpen(true);
   };
+
   return (
     <HeaderWrap>
       <HeaderTop>
@@ -47,19 +50,31 @@ const Header = () => {
                       to=""
                       aria-label="스크랩북 페이지 링크 버튼"
                     >
-                      ㅎㅎ
+                      <img
+                        src={ScrapIcon}
+                        alt=""
+                      />
                     </Link>
                   </ScrapBookLink>
                   <MypageBtn>
-                    <button aria-label="마이페이지 모달 버튼">
-                      ㅎㅎ
-                    </button>
+                    <MyPageBtn
+                      onClick={HandleMyPageClick}
+                      aria-label="마이페이지 모달 버튼"
+                    >
+                      ㅠㅠ
+                    </MyPageBtn>
+                    {isOpen && (
+                      <ModalWarp>
+                        {/* <ModalPortal> */}
+                        <HeaderModal
+                          closeModal={() =>
+                            setIsOpen(false)
+                          }
+                        />
+                        {/* </ModalPortal> */}
+                      </ModalWarp>
+                    )}
                   </MypageBtn>
-                  <button
-                    onClick={handleLogoutClick}
-                  >
-                    로그아웃
-                  </button>
                 </MyPages>
               )}
               <WriteBtn>
@@ -92,6 +107,16 @@ const Header = () => {
   );
 };
 
+const ModalWarp = styled.div`
+  position: relative;
+`;
+
+const MyPageBtn = styled.button`
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  border-radius: 100%;
+`;
 const HeaderWrap = styled.header`
   position: relative;
 `;
@@ -114,7 +139,7 @@ const StickyHeader = styled.div`
   transition: top 0.1s ease 0s;
   border-bottom: 1px solid #f1f1f1;
   background: #fff;
-  z-index: 1000;
+  z-index: 2000;
 `;
 const Logo = styled.div`
   h1 {
@@ -149,7 +174,10 @@ const MyPages = styled.div`
   margin: 0 10px 0 8px;
 `;
 const ScrapBookLink = styled.div``;
-const MypageBtn = styled.div``;
+const MypageBtn = styled.div`
+  width: 40px;
+  height: 40px;
+`;
 const MemberShip = styled.div`
   display: flex;
   align-items: center;
