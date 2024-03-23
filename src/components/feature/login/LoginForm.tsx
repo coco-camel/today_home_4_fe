@@ -8,7 +8,6 @@ import {
 import { emailCheck } from '../../../utils/regex/regex';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './LoginFormStyle';
-import LoginModal from './LoginModal';
 
 function LoginForm() {
   const [user, setUser] = useState<LoginUser>({
@@ -58,7 +57,7 @@ function LoginForm() {
   };
 
   const handleLoginClick = async (
-    e: React.MouseEvent<HTMLButtonElement>,
+    e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     let confirm = true;
@@ -90,20 +89,6 @@ function LoginForm() {
     });
   };
 
-  // 모달 렌더
-  const renderModal = () => {
-    if (loginModalIsOpen) {
-      return (
-        <LoginModal
-          onClose={() =>
-            setLoginModalIsOpen(false)
-          }
-        />
-      );
-    }
-    return null;
-  };
-
   return (
     <S.LoginContainer>
       <S.LinkWarpper>
@@ -111,16 +96,16 @@ function LoginForm() {
           <HomeIcon width={147} height={50} />
         </Link>
       </S.LinkWarpper>
-      <S.LoginForm>
+      <S.LoginForm onSubmit={handleLoginClick}>
         <S.Input
-          type="text"
+          type="email"
           value={user.username}
           onChange={handleEmailChange}
           placeholder="이메일"
           $hasValue={hasEmail}
           ref={emailInputRef}
+          required
         />
-        {renderModal()}
         <S.Input
           type="password"
           value={user.password}
@@ -129,7 +114,7 @@ function LoginForm() {
           $hasValue={hasPassword}
           ref={passwordInputRef}
         />
-        <S.Button onClick={handleLoginClick}>
+        <S.Button type="submit">
           <span>로그인</span>
         </S.Button>
       </S.LoginForm>
