@@ -1320,6 +1320,11 @@
   resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.1.1.tgz#1ec17e2edbec25c8306d424ecfbf13c7de1aaa31"
   integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
 
+"@react-cmpt/use-throttle@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@react-cmpt/use-throttle/-/use-throttle-0.3.3.tgz#8691ffaeaf0d00c7e9a7458570499406370d48a4"
+  integrity sha512-9VUFwgdGXI6iBe84X7hAPxVUAK5MSxxxtGGYRGovPNhTmgG8IobfGubrcVkDx5mgUYQlet4EQLSffDKFTkO+oA==
+
 "@reduxjs/toolkit@^2.2.2":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-2.2.2.tgz#952fc8f8315d7274e28f6e4608b7ec66fce7e94e"
@@ -1698,6 +1703,11 @@
   version "7.0.15"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
+
+"@types/lodash@^4.17.0":
+  version "4.17.0"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.0.tgz#d774355e41f372d5350a4d0714abb48194a489c3"
+  integrity sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==
 
 "@types/node@*", "@types/node@^20.11.30":
   version "20.11.30"
