@@ -3,8 +3,16 @@ import styled from 'styled-components';
 import ArroDownIcon from '../../assets/icons/simple-line-icons_arrow-up.svg';
 import HomeLogo from '../../assets/icons/homelogo.svg';
 import { Link } from 'react-router-dom';
+import { useLogout } from '../../hooks/mutations/user/userMutation';
 
 const Header = () => {
+  const isLogined: string = localStorage.getItem(
+    'accessToken',
+  ) as string;
+  const logoutMutation = useLogout();
+  const handleLogoutClick = () => {
+    logoutMutation.mutate();
+  };
   return (
     <HeaderWrap>
       <HeaderTop>
@@ -25,25 +33,35 @@ const Header = () => {
               </ul>
             </Nav>
             <UserActs>
-              {/* 로그인 전 */}
-              <MemberShip>
-                <Link to="/login">로그인</Link>
-                <Link to="/signup">회원가입</Link>
-              </MemberShip>
-              {/* 로그인 후 */}
-              <MyPages
-                style={{ display: 'none' }}
-              >
-                <ScrapBookLink>
-                  <Link
-                    to=""
-                    aria-label="스크랩북 페이지 링크 버튼"
-                  ></Link>
-                </ScrapBookLink>
-                <MypageBtn>
-                  <button aria-label="마이페이지 링크 버튼"></button>
-                </MypageBtn>
-              </MyPages>
+              {!isLogined ? (
+                <MemberShip>
+                  <Link to="/login">로그인</Link>
+                  <Link to="/signup">
+                    회원가입
+                  </Link>
+                </MemberShip>
+              ) : (
+                <MyPages>
+                  <ScrapBookLink>
+                    <Link
+                      to=""
+                      aria-label="스크랩북 페이지 링크 버튼"
+                    >
+                      ㅎㅎ
+                    </Link>
+                  </ScrapBookLink>
+                  <MypageBtn>
+                    <button aria-label="마이페이지 모달 버튼">
+                      ㅎㅎ
+                    </button>
+                  </MypageBtn>
+                  <button
+                    onClick={handleLogoutClick}
+                  >
+                    로그아웃
+                  </button>
+                </MyPages>
+              )}
               <WriteBtn>
                 <button>
                   <span>글쓰기</span>
@@ -125,7 +143,11 @@ const UserActs = styled.div`
   display: flex;
   align-items: center;
 `;
-const MyPages = styled.div``;
+const MyPages = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 10px 0 8px;
+`;
 const ScrapBookLink = styled.div``;
 const MypageBtn = styled.div``;
 const MemberShip = styled.div`
