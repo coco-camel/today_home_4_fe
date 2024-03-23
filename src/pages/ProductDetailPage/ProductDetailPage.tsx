@@ -9,7 +9,7 @@ import React, { useEffect } from 'react';
   ProductSpan, ReviewBox,
   Wrap,
 } from './ProductDetailPage.styled';*/
-import ReviewModal from '../../components/modal/ReviewMadal/ReviewModal';
+// import ReviewModal from '../../components/modal/ReviewMadal/ReviewModal';
 import {
   useDispatch,
   useSelector,
