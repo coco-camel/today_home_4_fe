@@ -8,7 +8,7 @@ export const pwCheck = (pw: string) => {
 // @제외 특수문자 체크
 export const signUpIdcheck = (id: string) => {
   const signUpIdRegex =
-    /^[!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]+$/;
+    /^[!#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]+$/;
   return signUpIdRegex.test(id);
 };
 

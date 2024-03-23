@@ -14,6 +14,7 @@ import {
 import { SignUpUser } from '../../../interfaces/user/user.interface';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './SignUpFormStyle';
+import { nickNameConfirm } from '../../../apis/login';
 
 function SignupForm() {
   const [user, setUser] = useState<SignUpUser>({
@@ -28,16 +29,17 @@ function SignupForm() {
     useState('');
   const signUpMutation = useSignUp();
 
-  const [hasEmail, setHasEmail] =
-    useState<boolean>(true);
+  const [hasEmail, setHasEmail] = useState(true);
   const [hasEmailCheck, setHasEmailCheck] =
-    useState<boolean>(true);
+    useState(true);
   const [hasPassword, setHasPassword] =
-    useState<boolean>(true);
+    useState(true);
   const [hasPasswordCheck, setHasPasswordCheck] =
-    useState<boolean>(true);
+    useState(true);
   const [hasNickName, setHasNickName] =
-    useState<boolean>(true);
+    useState(true);
+
+  // const [nickNameCheck, setNickNameCheck] = useState(true);
 
   const emailInputRef =
     useRef<HTMLInputElement | null>(null);
@@ -61,23 +63,32 @@ function SignupForm() {
     }
     if (value.includes('@')) {
       await setSelectEmail('직접입력');
+      // useEffect
       emailCheckInputRef.current?.focus();
     } else {
-      setUser({ ...user, email: value });
+      setUser((prev) => ({
+        ...prev,
+        email: value,
+      }));
       setHasEmail(false);
     }
     !value
       ? setHasEmail(false)
       : setHasEmail(true);
   };
-  const handlePasswordChange = async (
+  const handlePasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
-    await setUser({ ...user, password: value });
+    setUser((prev) => ({
+      ...prev,
+      password: value,
+    }));
+    // prev => {user: prev.user, password: value}
     !value
       ? setHasPassword(false)
-      : pwCheck(user.password)
+      : // const hasEmail = email.length !== 0
+        pwCheck(user.password)
         ? setHasPassword(true)
         : setHasPassword(false);
     if (user.passwordCheck) {
@@ -106,8 +117,15 @@ function SignupForm() {
       : signUpNickNameCheck(user.nickname)
         ? setHasNickName(true)
         : setHasNickName(false);
+
+    if (value && value.length >= 2) {
+      nickNameConfirm({
+        type: 'nickname',
+        value: value,
+      });
+    }
   };
-  const handleSignUpClick = async (
+  const handleSignUpClick = (
     e: React.MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
@@ -169,7 +187,7 @@ function SignupForm() {
   const handleEmailSelectChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    let { value } = e.target;
+    const { value } = e.target;
 
     setSelectEmail(value);
   };
