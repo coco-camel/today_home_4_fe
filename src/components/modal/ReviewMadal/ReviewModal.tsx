@@ -1,6 +1,5 @@
 import React, {
   Fragment,
-  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -8,7 +7,6 @@ import ModalTemplate from '../../templates/Modal/ModalTemplate';
 import { Wrap } from '../../../pages/ProductDetailPage/ProductDetailPage.styled';
 import styled from 'styled-components';
 import { GoStarFill } from 'react-icons/go';
-import Header from '../../layout/Header';
 import { Dimmed } from '../../templates/Modal/Modal.styled';
 import {
   useMutation,
@@ -19,10 +17,6 @@ import { selectiveproduct } from '../../../apis/productDetail';
 import { useParams } from 'react-router-dom';
 import { postAddReview } from '../../../apis/review';
 import { ReivewInputData } from '../../../interfaces/modal/ReviewModal.interface';
-import { number, string } from 'prop-types';
-import { ReviewData } from '../../../interfaces/productDetail/productDetail.interface';
-import { login } from '../../../apis/login';
-import react from '@vitejs/plugin-react';
 
 const ReviewModal = ({}: {}) => {
   const [hoverIndex, setHoverIndex] =
@@ -99,7 +93,7 @@ const ReviewModal = ({}: {}) => {
   const reviewMutaion = useMutation({
     mutationFn: postAddReview,
     onSuccess: () => {
-      queryClient.refetchQueries('postAddReview');
+      // queryClient.refetchQueries('postAddReview');
       console.log('><');
     },
   });

@@ -78,7 +78,7 @@ export const ReviewBox = styled.div`
   width: 100%;
   .reviewrite {
     color: #35c5f0;
-    coursor: pointer;
+    cursor: pointer;
   }
   .review {
     font-size: 18px;

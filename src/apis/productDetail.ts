@@ -1,11 +1,6 @@
-import { authInstance, instance } from './axios';
+import { instance } from './axios';
 import { ServerResponse } from '../interfaces/api/common.interface';
-import {
-  Product,
-  ProductDetailResponse,
-  Review,
-} from '../interfaces/api/product/response/index.interface';
-import axios from 'axios';
+import { ProductDetailResponse } from '../interfaces/api/product/response/index.interface';
 
 export const selectiveproduct = async (
   id?: string,

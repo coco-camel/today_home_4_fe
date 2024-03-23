@@ -331,7 +331,7 @@ function ProductDetailPage() {
                 </ReviewStar>
               </Center>
               <div>
-                {data?.reviews &&
+                {/* {data?.reviews &&
                 data.reviews.length > 0 ? (
                   data.reviews.map(
                     (review, index) => (
@@ -362,7 +362,7 @@ function ProductDetailPage() {
                   <div>
                     리뷰가 존재하지 않습니다.
                   </div>
-                )}
+                )} */}
                 <div>별</div>
               </div>
             </Container>

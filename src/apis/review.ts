@@ -1,9 +1,6 @@
 import { ReviewData } from '../interfaces/productDetail/productDetail.interface';
 import { authInstance } from './axios';
-import {
-  ReivewInput,
-  ReivewInputData,
-} from '../interfaces/modal/ReviewModal.interface';
+import { ReivewInput } from '../interfaces/modal/ReviewModal.interface';
 
 export const postAddReview = async ({
   contents,
