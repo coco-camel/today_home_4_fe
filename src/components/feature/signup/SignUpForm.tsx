@@ -10,11 +10,11 @@ import {
   signUpEmailcheck,
   signUpIdcheck,
   signUpNickNameCheck,
-} from '../../common/regex/regex';
+} from '../../../utils/regex/regex';
 import { SignUpUser } from '../../../interfaces/user/user.interface';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './SignUpFormStyle';
-import { nickNameConfirm } from '../../../apis/login';
+import { duplicateTestConfirm } from '../../../apis/login';
 
 function SignupForm() {
   const [user, setUser] = useState<SignUpUser>({
@@ -39,7 +39,10 @@ function SignupForm() {
   const [hasNickName, setHasNickName] =
     useState(true);
 
-  // const [nickNameCheck, setNickNameCheck] = useState(true);
+  const [nickNameChecked, setNickNameChecked] =
+    useState(false);
+  const [emailChecked, setEmailChecked] =
+    useState(false);
 
   const emailInputRef =
     useRef<HTMLInputElement | null>(null);
@@ -58,6 +61,7 @@ function SignupForm() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    setEmailChecked(false);
     if (signUpIdcheck(value)) {
       return;
     }
@@ -65,67 +69,75 @@ function SignupForm() {
       await setSelectEmail('직접입력');
       // useEffect
       emailCheckInputRef.current?.focus();
-    } else {
-      setUser((prev) => ({
-        ...prev,
-        email: value,
-      }));
-      setHasEmail(false);
+      return;
     }
-    !value
-      ? setHasEmail(false)
-      : setHasEmail(true);
+    value
+      ? setHasEmail(true)
+      : setHasEmail(false);
+    setUser((prev) => ({
+      ...prev,
+      email: value,
+    }));
   };
   const handlePasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    const isValidPassword = pwCheck(value);
+    setHasPassword(isValidPassword);
+
+    const isPasswordCheckValid =
+      value === user.passwordCheck;
+    setHasPasswordCheck(
+      isPasswordCheckValid ||
+        user.passwordCheck.trim() === '',
+    );
+
     setUser((prev) => ({
       ...prev,
       password: value,
     }));
-    // prev => {user: prev.user, password: value}
-    !value
-      ? setHasPassword(false)
-      : // const hasEmail = email.length !== 0
-        pwCheck(user.password)
-        ? setHasPassword(true)
-        : setHasPassword(false);
-    if (user.passwordCheck) {
-      setHasPasswordCheck(false);
-    }
   };
   const handlePasswordCheckChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
-    setUser({ ...user, passwordCheck: value });
-    if (value === user.password) {
-      setHasPasswordCheck(true);
-    } else {
-      setHasPasswordCheck(false);
-    }
+    const isPasswordCheckValid =
+      user.password === value;
+    setHasPasswordCheck(isPasswordCheckValid);
+
+    setUser((prev) => ({
+      ...prev,
+      passwordCheck: value,
+    }));
   };
 
   const handleNicknameChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
-    setUser({ ...user, nickname: value });
-    !value
-      ? setHasNickName(false)
-      : signUpNickNameCheck(user.nickname)
-        ? setHasNickName(true)
-        : setHasNickName(false);
-
-    if (value && value.length >= 2) {
-      nickNameConfirm({
+    if (!signUpNickNameCheck(value)) {
+      return;
+    }
+    if (value.length < 2 || value.length > 20) {
+      setNickNameChecked(false);
+      setHasNickName(false);
+    }
+    if (value.length >= 2 && value.length <= 20) {
+      duplicateTestConfirm({
         type: 'nickname',
         value: value,
+      }).then((result) => {
+        setNickNameChecked(result);
+        setHasNickName(!result);
       });
     }
+    setUser((prev) => ({
+      ...prev,
+      nickname: value,
+    }));
   };
-  const handleSignUpClick = (
+  const handleSignUpClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
@@ -138,26 +150,29 @@ function SignupForm() {
       ...user,
       email: emailUse,
     };
-
     if (
-      user.nickname.trim() === '' ||
-      !signUpNickNameCheck(user.nickname)
+      confirmUser.nickname.trim() === '' ||
+      !signUpNickNameCheck(
+        confirmUser.nickname,
+      ) ||
+      nickNameChecked
     ) {
       setHasNickName(false);
       nickNameInputRef.current?.focus();
       confirm = false;
     }
     if (
-      user.passwordCheck.trim() === '' ||
-      !pwCheck(user.passwordCheck)
+      confirmUser.passwordCheck.trim() === '' ||
+      confirmUser.passwordCheck !==
+        confirmUser.password
     ) {
       setHasPasswordCheck(false);
       passwordCheckInputRef.current?.focus();
       confirm = false;
     }
     if (
-      user.password.trim() === '' ||
-      !pwCheck(user.password)
+      confirmUser.password.trim() === '' ||
+      !pwCheck(confirmUser.password)
     ) {
       setHasPassword(false);
       passwordInputRef.current?.focus();
@@ -169,13 +184,24 @@ function SignupForm() {
       confirm = false;
     }
     if (
-      user.email.trim() === '' ||
-      emailCheck(user.email)
+      confirmUser.email.trim() === '' ||
+      !emailCheck(confirmUser.email)
     ) {
       setHasEmail(false);
       emailInputRef.current?.focus();
       confirm = false;
     }
+    await duplicateTestConfirm({
+      type: 'email',
+      value: confirmUser.email,
+    }).then((result) => {
+      setEmailChecked(result);
+      setHasEmail(!result);
+      if (result) {
+        emailInputRef.current?.focus();
+        confirm = false;
+      }
+    });
 
     if (!confirm) {
       return;
@@ -188,7 +214,6 @@ function SignupForm() {
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const { value } = e.target;
-
     setSelectEmail(value);
   };
 
@@ -196,12 +221,10 @@ function SignupForm() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    value
+      ? setHasEmailCheck(true)
+      : setHasEmailCheck(false);
     setCustomEmail(value);
-    !value
-      ? setHasEmailCheck(false)
-      : signUpEmailcheck(customEmail)
-        ? setHasEmailCheck(true)
-        : setHasEmailCheck(false);
   };
 
   const handleCustomEmailResetClick = (
@@ -232,9 +255,9 @@ function SignupForm() {
                 value={user.email}
                 onChange={handleEmailChange}
                 $hasCheck={hasEmail}
-                $hasValue={signUpIdcheck(
-                  user.email,
-                )}
+                $hasValue={
+                  !signUpIdcheck(user.email)
+                }
                 ref={emailInputRef}
               />
               <span>@</span>
@@ -287,13 +310,19 @@ function SignupForm() {
                 </S.CustomEmailContainer>
               )}
             </S.SignUpSelectBox>
+            {emailChecked && (
+              <S.ErrorMassage>
+                이미 가입된 이메일입니다.
+              </S.ErrorMassage>
+            )}
           </S.SignUpInputWarpper>
 
           <S.SignUpInputWarpper>
             <S.InputLabel
               $hasCheck={
-                hasPassword ||
-                pwCheck(user.password)
+                (user.password.length === 0 ||
+                  pwCheck(user.password)) &&
+                hasPassword
               }
             >
               비밀번호
@@ -308,7 +337,10 @@ function SignupForm() {
               onChange={handlePasswordChange}
               placeholder="비밀번호"
               $hasCheck={hasPassword}
-              $hasValue={pwCheck(user.password)}
+              $hasValue={
+                pwCheck(user.password) ||
+                user.password.length === 0
+              }
               ref={passwordInputRef}
             />
             {user.password &&
@@ -320,14 +352,8 @@ function SignupForm() {
               )}
           </S.SignUpInputWarpper>
           <S.SignUpInputWarpper>
-            {/* 추가작업 필요 */}
             <S.InputLabel
-              $hasCheck={
-                hasPasswordCheck ||
-                (user.passwordCheck !== '' &&
-                  user.password ===
-                    user.passwordCheck)
-              }
+              $hasCheck={hasPasswordCheck}
             >
               비밀번호 확인
             </S.InputLabel>
@@ -338,9 +364,9 @@ function SignupForm() {
               placeholder="비밀번호 확인"
               $hasCheck={hasPasswordCheck}
               $hasValue={
-                user.passwordCheck !== '' &&
-                user.password ===
-                  user.passwordCheck
+                user.passwordCheck ===
+                  user.password ||
+                user.passwordCheck.length === 0
               }
               ref={passwordCheckInputRef}
             />
@@ -355,7 +381,7 @@ function SignupForm() {
           <S.SignUpInputWarpper>
             <S.InputLabel
               $hasCheck={
-                hasNickName ||
+                hasNickName &&
                 signUpNickNameCheck(user.nickname)
               }
             >
@@ -376,6 +402,11 @@ function SignupForm() {
               )}
               ref={nickNameInputRef}
             />
+            {nickNameChecked && (
+              <S.ErrorMassage>
+                사용 중인 별명입니다.
+              </S.ErrorMassage>
+            )}
           </S.SignUpInputWarpper>
           <S.Button onClick={handleSignUpClick}>
             회원가입하기

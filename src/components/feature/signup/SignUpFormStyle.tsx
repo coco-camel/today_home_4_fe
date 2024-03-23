@@ -9,7 +9,7 @@ export const Input = styled.input<{
   margin: 0;
   padding: 8px 15px 9px;
   border: ${({ $hasValue, $hasCheck }) =>
-    $hasValue || $hasCheck
+    $hasValue && $hasCheck
       ? '1px solid #dbdbdb'
       : '1px solid red'};
   color: #000;
@@ -21,7 +21,7 @@ export const Input = styled.input<{
   background-color: #fff;
   &:focus {
     box-shadow: ${({ $hasValue, $hasCheck }) =>
-      $hasValue || $hasCheck
+      $hasValue && $hasCheck
         ? '0 0 0 3px rgba(53, 197, 240, 0.3)'
         : '0 0 0 3px rgba(255, 119, 119, 0.3)'};
 

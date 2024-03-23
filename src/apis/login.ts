@@ -30,7 +30,7 @@ export const login = async (user: LoginUser) => {
   }
 };
 
-export const nickNameConfirm = async (
+export const duplicateTestConfirm = async (
   user: DuplicateTestCheck,
 ) => {
   console.log(user);
@@ -38,7 +38,8 @@ export const nickNameConfirm = async (
     const res = await instance.get(
       `/api/v1/members/check?type=${user.type}&value=${user.value}`,
     );
-    return res;
+    const result = res.data.data.isExist;
+    return result;
   } catch (error) {
     console.log(error);
   }
