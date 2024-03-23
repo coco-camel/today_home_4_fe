@@ -75,8 +75,11 @@ function LoginForm() {
     if (!confirm) {
       return;
     }
-    loginMutation.mutate(user);
-    navigate('/');
+    loginMutation.mutate(user, {
+      onSuccess: (data) => {
+        navigate('/');
+      },
+    });
   };
 
   return (

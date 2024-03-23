@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useRef, useState } from 'react';
 import { useSignUp } from '../../../hooks/mutations/user/userMutation';
 import {
   Link,
@@ -18,7 +14,7 @@ import {
 import { SignUpUser } from '../../../interfaces/user/user.interface';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './SignUpFormStyle';
-import { nickNameConfirm } from '../../../apis/login';
+import { duplicateTestConfirm } from '../../../apis/login';
 
 function SignupForm() {
   const [user, setUser] = useState<SignUpUser>({
@@ -42,7 +38,10 @@ function SignupForm() {
     useState(true);
   const [hasNickName, setHasNickName] =
     useState(true);
-  const [nickNameCheck, setNickNameCheck] =
+
+  const [nickNameChecked, setNickNameChecked] =
+    useState(false);
+  const [emailChecked, setEmailChecked] =
     useState(false);
 
   const emailInputRef =
@@ -62,6 +61,7 @@ function SignupForm() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    setEmailChecked(false);
     if (signUpIdcheck(value)) {
       return;
     }
@@ -120,15 +120,15 @@ function SignupForm() {
       return;
     }
     if (value.length < 2 || value.length > 20) {
-      setNickNameCheck(false);
+      setNickNameChecked(false);
       setHasNickName(false);
     }
     if (value.length >= 2 && value.length <= 20) {
-      nickNameConfirm({
+      duplicateTestConfirm({
         type: 'nickname',
         value: value,
       }).then((result) => {
-        setNickNameCheck(result);
+        setNickNameChecked(result);
         setHasNickName(!result);
       });
     }
@@ -137,7 +137,7 @@ function SignupForm() {
       nickname: value,
     }));
   };
-  const handleSignUpClick = (
+  const handleSignUpClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
@@ -150,26 +150,29 @@ function SignupForm() {
       ...user,
       email: emailUse,
     };
-
     if (
-      user.nickname.trim() === '' ||
-      !signUpNickNameCheck(user.nickname)
+      confirmUser.nickname.trim() === '' ||
+      !signUpNickNameCheck(
+        confirmUser.nickname,
+      ) ||
+      nickNameChecked
     ) {
       setHasNickName(false);
       nickNameInputRef.current?.focus();
       confirm = false;
     }
     if (
-      user.passwordCheck.trim() === '' ||
-      user.passwordCheck !== user.password
+      confirmUser.passwordCheck.trim() === '' ||
+      confirmUser.passwordCheck !==
+        confirmUser.password
     ) {
       setHasPasswordCheck(false);
       passwordCheckInputRef.current?.focus();
       confirm = false;
     }
     if (
-      user.password.trim() === '' ||
-      !pwCheck(user.password)
+      confirmUser.password.trim() === '' ||
+      !pwCheck(confirmUser.password)
     ) {
       setHasPassword(false);
       passwordInputRef.current?.focus();
@@ -181,13 +184,24 @@ function SignupForm() {
       confirm = false;
     }
     if (
-      user.email.trim() === '' ||
-      emailCheck(user.email)
+      confirmUser.email.trim() === '' ||
+      !emailCheck(confirmUser.email)
     ) {
       setHasEmail(false);
       emailInputRef.current?.focus();
       confirm = false;
     }
+    await duplicateTestConfirm({
+      type: 'email',
+      value: confirmUser.email,
+    }).then((result) => {
+      setEmailChecked(result);
+      setHasEmail(!result);
+      if (result) {
+        emailInputRef.current?.focus();
+        confirm = false;
+      }
+    });
 
     if (!confirm) {
       return;
@@ -200,7 +214,6 @@ function SignupForm() {
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const { value } = e.target;
-
     setSelectEmail(value);
   };
 
@@ -208,9 +221,6 @@ function SignupForm() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
-    if (signUpEmailcheck(value)) {
-      console.log('ㅎㅎ');
-    }
     value
       ? setHasEmailCheck(true)
       : setHasEmailCheck(false);
@@ -300,6 +310,11 @@ function SignupForm() {
                 </S.CustomEmailContainer>
               )}
             </S.SignUpSelectBox>
+            {emailChecked && (
+              <S.ErrorMassage>
+                이미 가입된 이메일입니다.
+              </S.ErrorMassage>
+            )}
           </S.SignUpInputWarpper>
 
           <S.SignUpInputWarpper>
@@ -337,7 +352,6 @@ function SignupForm() {
               )}
           </S.SignUpInputWarpper>
           <S.SignUpInputWarpper>
-            {/* 추가작업 필요 */}
             <S.InputLabel
               $hasCheck={hasPasswordCheck}
             >
@@ -388,7 +402,7 @@ function SignupForm() {
               )}
               ref={nickNameInputRef}
             />
-            {nickNameCheck && (
+            {nickNameChecked && (
               <S.ErrorMassage>
                 사용 중인 별명입니다.
               </S.ErrorMassage>

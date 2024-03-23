@@ -30,9 +30,10 @@ export const login = async (user: LoginUser) => {
   }
 };
 
-export const nickNameConfirm = async (
+export const duplicateTestConfirm = async (
   user: DuplicateTestCheck,
 ) => {
+  console.log(user);
   try {
     const res = await instance.get(
       `/api/v1/members/check?type=${user.type}&value=${user.value}`,
