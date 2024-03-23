@@ -8,28 +8,28 @@ export interface SizeProps {
 }
 
 export interface MarginProps {
-  $marginTop?: string
-  $marginBottom?: string
-  $marginLeft?: string
-  $marginRight?: string
+  $marginTop?: string;
+  $marginBottom?: string;
+  $marginLeft?: string;
+  $marginRight?: string;
 
-  $margin?: string
+  $margin?: string;
 }
 
 export interface PaddingProps {
-  $paddingTop?: string
-  $paddingBottom?: string
-  $paddingLeft?: string
-  $paddingRight?: string
+  $paddingTop?: string;
+  $paddingBottom?: string;
+  $paddingLeft?: string;
+  $paddingRight?: string;
 
-  $padding?: string
+  $padding?: string;
 }
 
 export interface FlexProps {
-  $dc?: boolean //flex-direction column
-  $jc?: boolean //justify-contents center
-  $js?: boolean //justify-contents space-between
-  $ac?: boolean //align-items center
-  $afe?: boolean //align-items flex-end
-  $fWrap?: boolean //flex-wrap: wrap
+  $dc?: boolean; //flex-direction column
+  $jc?: boolean; //justify-contents center
+  $js?: boolean; //justify-contents space-between
+  $ac?: boolean; //align-items center
+  $afe?: boolean; //align-items flex-end
+  $fWrap?: boolean; //flex-wrap: wrap
 }

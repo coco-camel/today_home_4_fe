@@ -5,7 +5,7 @@ import React from 'react';
 import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
 import Layout from '../components/layout/Layout';
-import ProductDetailPage from "../pages/ProductDetailPage/ProductDetailPage";
+import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
 
 export const router = createBrowserRouter([
   {
