@@ -1,39 +1,68 @@
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-} from 'react';
+import React, {Fragment, useEffect, useState,} from 'react';
 import ModalTemplate from '../../templates/Modal/ModalTemplate';
-import { Wrap } from '../../../pages/ProductDetailPage/ProductDetailPage.styled';
-import styled from 'styled-components';
-import { GoStarFill } from 'react-icons/go';
-import { Dimmed } from '../../templates/Modal/Modal.styled';
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { selectiveproduct } from '../../../apis/productDetail';
-import { useParams } from 'react-router-dom';
-import { postAddReview } from '../../../apis/review';
-import { ReivewInputData } from '../../../interfaces/modal/ReviewModal.interface';
+import {StarBox, Wrap} from '../../../pages/ProductDetailPage/ProductDetailPage.styled';
+import {GoStarFill} from 'react-icons/go';
+import {Dimmed} from '../../templates/Modal/Modal.styled';
+import {useMutation, useQuery, useQueryClient,} from '@tanstack/react-query';
+import {selectiveproduct} from '../../../apis/productDetail';
+import {useNavigate, useParams} from 'react-router-dom';
+import {postAddReview} from '../../../apis/review';
+import {ReivewInputData} from '../../../interfaces/modal/ReviewModal.interface';
+import {FlexCloumBox, ImgBox, ModalBox, ReviewProduct, Sbmitbutton, TitleBox} from './ReviewModal.styled';
+import {Reviews} from '../../../interfaces/api/product/response/index.interface'
 
-const ReviewModal = ({}: {}) => {
-  const [hoverIndex, setHoverIndex] =
-    useState<number>(-1);
-  const [rating, setRating] = useState<number>(0);
+const ReviewModal = ({targetReviewData}: {targetReviewData?: Reviews}) => {
+  const [hoverIndex, setHoverIndex] = useState<number>(-1);
 
-  const handleMouseEnter = (
-    index: number,
-  ): void => {
+
+  const [rating, setRating] = useState<number>(
+      targetReviewData ? targetReviewData.rating : 0
+  );
+
+  const [formData, setFormData] = useState<ReivewInputData>({
+      contents: '',
+      rating: 0,
+  });
+
+  const params = useParams();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (targetReviewData) {
+      setFormData({
+        contents: targetReviewData.contents,
+        rating: targetReviewData.rating
+      });
+    }
+  }, [targetReviewData])
+
+
+
+  const queryDetail = useQuery({
+    queryKey: [
+      'getProductDetail',
+      params.productId,
+    ],
+    queryFn: () =>
+        selectiveproduct(params.productId),
+    select: (response) => response.data,
+    enabled: !!params.productId,
+  });
+
+  const { isLoading, isError, data } = queryDetail
+
+
+
+  const handleMouseEnter = (index: number,) => {
     setHoverIndex(index);
   };
 
-  const handleMouseLeave = (): void => {
+  const handleMouseLeave = () => {
     setHoverIndex(-1);
   };
 
-  const handleClick = (index: number): void => {
+
+  const handleClick = (index: number) => {
     const selectedRating = index + 1;
     setRating(selectedRating);
     setFormData((prevState) => ({
@@ -62,43 +91,26 @@ const ReviewModal = ({}: {}) => {
                   : '#dbdbdb'
                 : index < rating
                   ? '#35c5f0'
-                  : '#dbdbdb',
-          }}
-        />
-      ))}
-    </Wrap>
-  );
+                      : '#dbdbdb',
+              }}
+            />
+          ))}
+        </Wrap>
+      );
 
-  const params = useParams();
 
-  const queryClient = useQueryClient();
-
-  const { isLoading, isError, data } = useQuery({
-    queryKey: [
-      'getProductDetail',
-      params.productId,
-    ],
-    queryFn: () =>
-      selectiveproduct(params.productId),
-    select: (response) => response.data,
-    enabled: !!params.productId,
-  });
-
-  const [formData, setFormData] =
-    useState<ReivewInputData>({
-      contents: '',
-      rating: 0,
-    });
+const navigate = useNavigate()
 
   const reviewMutaion = useMutation({
     mutationFn: postAddReview,
     onSuccess: () => {
-      // queryClient.refetchQueries('postAddReview');
+      queryDetail.refetch();
       console.log('><');
     },
   });
 
   const handleClickSubmit = () => {
+    navigate(`/detail/${data?.product.productId}`)
     const productId: number = params?.productId
       ? Number(params.productId)
       : 0;
@@ -173,7 +185,7 @@ const ReviewModal = ({}: {}) => {
           <Sbmitbutton
             onClick={handleClickSubmit}
           >
-            완료
+            {targetReviewData ? '수정' : '완료' }
           </Sbmitbutton>
         </ModalBox>
       </ModalTemplate>
@@ -181,82 +193,5 @@ const ReviewModal = ({}: {}) => {
   );
 };
 
-const ModalBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  .spantext {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 30px 0 15px 0;
-  }
-  .reviewInput {
-    width: 638px;
-    height: 110px;
-    border: 1px solid #dbdbdb;
-    border-radius: 4px;
-    margin-bottom: 34px;
-    padding: 0 15px;
-    line-height: 40px;
-  }
-`;
 
-const StarBox = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-const TitleBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.35;
-  font-weight: 700;
-  text-align: center;
-  font-size: 20px;
-  height: 50px;
-`;
-
-const Sbmitbutton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 668px;
-  height: 45px;
-  background-color: #35c5f0;
-  border-color: #35c5f0;
-  color: #fff;
-  border-radius: 4px;
-`;
-
-const FlexCloumBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  .brandname {
-    font-size: 11px;
-    color: rgb(117, 117, 117);
-    margin-bottom: 6px;
-  }
-
-  .productname {
-    margin-bottom: 6px;
-    font-size: 15px;
-    line-height: 1.2;
-  }
-`;
-
-const ReviewProduct = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const ImgBox = styled.div`
-  height: 100px;
-  width: 125px;
-  margin: 0 15px 0 0;
-  > img {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-  }
-`;
 export default ReviewModal;
