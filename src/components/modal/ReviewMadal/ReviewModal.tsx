@@ -1,5 +1,6 @@
 import React, {
   Fragment,
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -16,14 +17,14 @@ import {
 } from '@tanstack/react-query';
 import { selectiveproduct } from '../../../apis/productDetail';
 import { useParams } from 'react-router-dom';
-import { reviewRegistration } from '../../../apis/review';
+import { postAddReview } from '../../../apis/review';
 import { ReivewInputData } from '../../../interfaces/modal/ReviewModal.interface';
 import { number, string } from 'prop-types';
 import { ReviewData } from '../../../interfaces/productDetail/productDetail.interface';
 import { login } from '../../../apis/login';
 import react from '@vitejs/plugin-react';
 
-const ReviewModal = () => {
+const ReviewModal = ({}: {}) => {
   const [hoverIndex, setHoverIndex] =
     useState<number>(-1);
   const [rating, setRating] = useState<number>(0);
@@ -96,8 +97,9 @@ const ReviewModal = () => {
     });
 
   const reviewMutaion = useMutation({
-    mutationFn: reviewRegistration,
+    mutationFn: postAddReview,
     onSuccess: () => {
+      queryClient.refetchQueries('postAddReview');
       console.log('><');
     },
   });
@@ -115,6 +117,12 @@ const ReviewModal = () => {
       rating: 0,
     });
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
