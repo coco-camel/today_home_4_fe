@@ -4,6 +4,7 @@ import type {
   LoginUser,
   DuplicateTestCheck,
 } from '../interfaces/user/user.interface';
+import { AxiosError } from 'axios';
 
 export const signUp = async (
   user: SignUpUser,
@@ -26,7 +27,12 @@ export const login = async (user: LoginUser) => {
     );
     return res;
   } catch (error) {
-    console.log(error);
+    const axiosError = error as AxiosError<any>;
+    if (axiosError.response) {
+      const result =
+        axiosError.response.data.status;
+      return result;
+    }
   }
 };
 

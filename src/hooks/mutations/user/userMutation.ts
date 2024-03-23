@@ -7,7 +7,7 @@ import {
 export const useSignUp = () => {
   return useMutation({
     mutationFn: signUp,
-    onSuccess: (data) => {},
+    onSuccess: () => {},
     onError: (error) => {
       console.log(error);
     },
@@ -17,10 +17,12 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      localStorage.setItem(
-        'accessToken',
-        data?.headers['authorization'],
-      );
+      if (data) {
+        localStorage.setItem(
+          'accessToken',
+          data?.headers['authorization'],
+        );
+      }
     },
     onError: (error) => {
       console.log(error);
