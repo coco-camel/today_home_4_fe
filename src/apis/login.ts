@@ -4,6 +4,7 @@ import type {
   LoginUser,
   DuplicateTestCheck,
 } from '../interfaces/user/user.interface';
+import { AxiosError } from 'axios';
 
 export const signUp = async (
   user: SignUpUser,
@@ -26,20 +27,35 @@ export const login = async (user: LoginUser) => {
     );
     return res;
   } catch (error) {
-    console.log(error);
+    const axiosError = error as AxiosError<any>;
+    if (axiosError.response) {
+      const result =
+        axiosError.response.data.status;
+      return result;
+    }
   }
 };
 
 export const duplicateTestConfirm = async (
   user: DuplicateTestCheck,
 ) => {
-  console.log(user);
   try {
     const res = await instance.get(
       `/api/v1/members/check?type=${user.type}&value=${user.value}`,
     );
     const result = res.data.data.isExist;
     return result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const logout = async () => {
+  try {
+    const res = await authInstance.post(
+      '/api/v1/members/logout',
+    );
+    return res;
   } catch (error) {
     console.log(error);
   }

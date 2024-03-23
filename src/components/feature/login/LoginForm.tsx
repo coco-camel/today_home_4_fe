@@ -5,10 +5,7 @@ import {
   Link,
   useNavigate,
 } from 'react-router-dom';
-import {
-  emailCheck,
-  pwCheck,
-} from '../../../utils/regex/regex';
+import { emailCheck } from '../../../utils/regex/regex';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './LoginFormStyle';
 
@@ -17,11 +14,13 @@ function LoginForm() {
     username: '',
     password: '',
   });
-
   const [hasEmail, setHasEmail] =
     useState<boolean>(true);
   const [hasPassword, setHasPassword] =
     useState<boolean>(true);
+
+  const [loginModalIsOpen, setLoginModalIsOpen] =
+    useState(false);
 
   const loginMutation = useLogin();
   const navigate = useNavigate();
@@ -35,6 +34,12 @@ function LoginForm() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    if (
+      loginModalIsOpen &&
+      emailCheck(user.username)
+    ) {
+      setLoginModalIsOpen(false);
+    }
     await setUser({ ...user, username: value });
     !value
       ? setHasEmail(false)
@@ -52,14 +57,11 @@ function LoginForm() {
   };
 
   const handleLoginClick = async (
-    e: React.MouseEvent<HTMLButtonElement>,
+    e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     let confirm = true;
-    if (
-      user.password.trim() === '' ||
-      !pwCheck(user.password)
-    ) {
+    if (user.password.trim() === '') {
       setHasPassword(false);
       passwordInputRef.current?.focus();
       confirm = false;
@@ -69,6 +71,8 @@ function LoginForm() {
       !emailCheck(user.username)
     ) {
       setHasEmail(false);
+      // 모달 오픈
+      setLoginModalIsOpen(true);
       emailInputRef.current?.focus();
       confirm = false;
     }
@@ -77,7 +81,10 @@ function LoginForm() {
     }
     loginMutation.mutate(user, {
       onSuccess: (data) => {
-        navigate('/');
+        data
+          ? navigate('/')
+          : passwordInputRef.current?.focus(),
+          setHasPassword(false);
       },
     });
   };
@@ -89,14 +96,15 @@ function LoginForm() {
           <HomeIcon width={147} height={50} />
         </Link>
       </S.LinkWarpper>
-      <S.LoginForm>
+      <S.LoginForm onSubmit={handleLoginClick}>
         <S.Input
-          type="text"
+          type="email"
           value={user.username}
           onChange={handleEmailChange}
           placeholder="이메일"
           $hasValue={hasEmail}
           ref={emailInputRef}
+          required
         />
         <S.Input
           type="password"
@@ -106,7 +114,7 @@ function LoginForm() {
           $hasValue={hasPassword}
           ref={passwordInputRef}
         />
-        <S.Button onClick={handleLoginClick}>
+        <S.Button type="submit">
           <span>로그인</span>
         </S.Button>
       </S.LoginForm>
