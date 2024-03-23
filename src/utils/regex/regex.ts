@@ -8,7 +8,7 @@ export const pwCheck = (pw: string) => {
 // @제외 특수문자 체크
 export const signUpIdcheck = (id: string) => {
   const signUpIdRegex =
-    /^[!#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]+$/;
+    /^([!#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]+)$/;
   return signUpIdRegex.test(id);
 };
 
@@ -26,11 +26,11 @@ export const emailCheck = (id: string) => {
   return emailCheck.test(id);
 };
 
-// 한/영/숫자 2~20자리
+// 한/영/숫자
 export const signUpNickNameCheck = (
   id: string,
 ) => {
   const signUpNickNameCheck =
-    /^([ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9]{2,20})$/;
+    /^([ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9]*)*$/;
   return signUpNickNameCheck.test(id);
 };

@@ -5,23 +5,23 @@ import {
   Link,
   useNavigate,
 } from 'react-router-dom';
-import {
-  emailCheck,
-  pwCheck,
-} from '../../common/regex/regex';
+import { emailCheck } from '../../../utils/regex/regex';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './LoginFormStyle';
+import LoginModal from './LoginModal';
 
 function LoginForm() {
   const [user, setUser] = useState<LoginUser>({
     username: '',
     password: '',
   });
-
   const [hasEmail, setHasEmail] =
     useState<boolean>(true);
   const [hasPassword, setHasPassword] =
     useState<boolean>(true);
+
+  const [loginModalIsOpen, setLoginModalIsOpen] =
+    useState(false);
 
   const loginMutation = useLogin();
   const navigate = useNavigate();
@@ -35,6 +35,12 @@ function LoginForm() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = e.target;
+    if (
+      loginModalIsOpen &&
+      emailCheck(user.username)
+    ) {
+      setLoginModalIsOpen(false);
+    }
     await setUser({ ...user, username: value });
     !value
       ? setHasEmail(false)
@@ -56,10 +62,7 @@ function LoginForm() {
   ) => {
     e.preventDefault();
     let confirm = true;
-    if (
-      user.password.trim() === '' ||
-      !pwCheck(user.password)
-    ) {
+    if (user.password.trim() === '') {
       setHasPassword(false);
       passwordInputRef.current?.focus();
       confirm = false;
@@ -69,14 +72,36 @@ function LoginForm() {
       !emailCheck(user.username)
     ) {
       setHasEmail(false);
+      // 모달 오픈
+      setLoginModalIsOpen(true);
       emailInputRef.current?.focus();
       confirm = false;
     }
     if (!confirm) {
       return;
     }
-    loginMutation.mutate(user);
-    navigate('/');
+    loginMutation.mutate(user, {
+      onSuccess: (data) => {
+        data
+          ? navigate('/')
+          : passwordInputRef.current?.focus(),
+          setHasPassword(false);
+      },
+    });
+  };
+
+  // 모달 렌더
+  const renderModal = () => {
+    if (loginModalIsOpen) {
+      return (
+        <LoginModal
+          onClose={() =>
+            setLoginModalIsOpen(false)
+          }
+        />
+      );
+    }
+    return null;
   };
 
   return (
@@ -95,6 +120,7 @@ function LoginForm() {
           $hasValue={hasEmail}
           ref={emailInputRef}
         />
+        {renderModal()}
         <S.Input
           type="password"
           value={user.password}
