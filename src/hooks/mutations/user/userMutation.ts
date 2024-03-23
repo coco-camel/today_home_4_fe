@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   login,
+  logout,
   signUp,
 } from '../../../apis/login';
 
@@ -23,6 +24,18 @@ export const useLogin = () => {
           data?.headers['authorization'],
         );
       }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};
+
+export const useLogout = () => {
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      localStorage.removeItem('accessToken');
     },
     onError: (error) => {
       console.log(error);
