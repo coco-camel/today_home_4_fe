@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import FilterButton from './FilterButton';
 import productAPI from '../../apis/product';
 import {
+  useInfiniteQuery,
   useMutation,
-  // useInfiniteQuery,
-  useQuery,
   // useQueryClient,
 } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
@@ -14,21 +13,34 @@ import bookMarkAPI from '../../apis/bookmark';
 
 const Products = () => {
   // 전체상품 조회
-  const getProductAll = async () => {
+  const getProductAll = async (
+    pageParam: number,
+  ) => {
     const { data } =
-      await productAPI.getProductAll();
-    return data.data.products;
-    // const { respnseDto, hasNext } = data.data;
-    // return {
-    //   result: respnseDto,
-    //   nextPage: pageParam + 1,
-    //   isLast: !hasNext,
-    // };
+      await productAPI.getProductAll(pageParam);
+    const { responseDto, hasNext } = data.data;
+    return {
+      result: responseDto,
+      nextPage: pageParam + 1,
+      isLast: !hasNext,
+    };
+    // return data.data.products;
   };
-  const { data: products } = useQuery({
-    queryKey: ['getProductsAll'],
-    queryFn: getProductAll,
+  // const { data: products } = useQuery({
+  //   queryKey: ['getProductsAll'],
+  //   queryFn: getProductAll(pageParam),
+  // });
+
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: [`productList`],
+    queryFn: ({ pageParam = 1 }) =>
+      getProductAll(pageParam),
   });
+
   // 북마크 등록
   const addBookMark = async (
     productId: number,
