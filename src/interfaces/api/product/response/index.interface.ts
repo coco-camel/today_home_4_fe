@@ -1,6 +1,6 @@
 export interface ProductDetailResponse {
   product: Product;
-  review: Reviews[];
+  reviews: Reviews[];
 }
 
 export interface Product {
@@ -19,4 +19,5 @@ export interface Reviews {
   nickname: string;
   contents: string;
   rating: number;
+  reviewId : number;
 }
