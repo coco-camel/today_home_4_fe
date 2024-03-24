@@ -19,9 +19,9 @@ function HeaderModal({
       closeModal();
     }
   };
-
   const handleLogoutClick = () => {
     logoutMutation.mutate();
+    closeModal();
   };
 
   useEffect(() => {
@@ -41,13 +41,10 @@ function HeaderModal({
     <div ref={modalRef}>
       <ModalWrap>
         <Modal>
-          <MyBtn>HeaderModal</MyBtn>
-          <MyBtn>HeaderModal</MyBtn>
-          <MyBtn>HeaderModal</MyBtn>
-          <MyBtn>HeaderModal</MyBtn>
+          <MyBtn>마이페이지</MyBtn>
           <MyBtn
             onClick={() => {
-              handleLogoutClick(), closeModal();
+              handleLogoutClick();
             }}
           >
             로그아웃
@@ -61,18 +58,14 @@ function HeaderModal({
 export default HeaderModal;
 
 const ModalWrap = styled.div`
-  position: relative;
+  position: absolute;
   padding: 8px;
   background-color: rgb(255, 255, 255);
   border: 1px solid rgb(218, 221, 224);
   border-radius: 6px;
   box-shadow: rgba(63, 71, 77, 0.2) 0px 4px 10px
     0px;
-  transform: translateY(
-    ${($moveDown) =>
-      $moveDown ? '0px' : '-20px'}
-  );
-  transition: transform 1s ease;
+  transform: translate(-70px, 5px);
 `;
 const Modal = styled.div`
   position: absolute;
@@ -85,7 +78,7 @@ const Modal = styled.div`
   width: 180px;
   box-shadow: rgba(63, 71, 77, 0.2) 0px 4px 10px
     0px;
-  transform: translate(-70px, -10px);
+  transform: translate(-85px, -10px);
 `;
 const MyBtn = styled.div`
   position: relative;
@@ -95,4 +88,7 @@ const MyBtn = styled.div`
   font-size: 15px;
   text-align: left;
   cursor: pointer;
+  &:hover {
+    background-color: #f7f7f7;
+  }
 `;

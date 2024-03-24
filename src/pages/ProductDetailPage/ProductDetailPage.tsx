@@ -1,18 +1,31 @@
-import React, {useEffect, useState,} from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import ReviewModal from '../../components/modal/ReviewMadal/ReviewModal';
-import {useDispatch, useSelector,} from 'react-redux';
-import {openModal} from '../../redux/modules/modal';
-import {ModalState} from '../../interfaces/productDetail/productDetail.interface';
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+import { openModal } from '../../redux/modules/modal';
+import { ModalState } from '../../interfaces/productDetail/productDetail.interface';
 import Header from '../../components/layout/Header';
-import {useQuery} from '@tanstack/react-query';
-import {selectiveproduct} from '../../apis/productDetail';
-import {useParams} from 'react-router-dom';
-import {MdOutlineKeyboardArrowRight} from 'react-icons/md';
-import {Container, ContentBox, Wrap,} from './ProductDetailPage2.styled';
+import { useQuery } from '@tanstack/react-query';
+import { selectiveproduct } from '../../apis/productDetail';
+import { useParams } from 'react-router-dom';
+import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
+import {
+  Container,
+  ContentBox,
+  Wrap,
+} from './ProductDetailPage2.styled';
 import Flex from '../../components/layer/Flex';
-import {TbHome} from 'react-icons/tb';
-import { CgProfile } from "react-icons/cg";
-import {ReivewBar, RevieCont } from './ProductDetailPage.styled'
+import { TbHome } from 'react-icons/tb';
+import { CgProfile } from 'react-icons/cg';
+import {
+  ReivewBar,
+  RevieCont,
+} from './ProductDetailPage.styled';
 
 import {
   Box,
@@ -36,10 +49,10 @@ import {
   StarBox,
 } from './ProductDetailPage.styled';
 
-import {GoStarFill} from 'react-icons/go';
-import {RiCoupon2Line} from 'react-icons/ri';
-import {Cloum} from './ProductDetailPage.styled';
-import {Line1} from  './ProductDetailPage.styled';
+import { GoStarFill } from 'react-icons/go';
+import { RiCoupon2Line } from 'react-icons/ri';
+import { Cloum } from './ProductDetailPage.styled';
+import { Line1 } from './ProductDetailPage.styled';
 
 function ProductDetailPage() {
   const params = useParams();
@@ -48,7 +61,8 @@ function ProductDetailPage() {
     (state: { modal: ModalState }) =>
       state.modal.isOpen,
   );
-  const [targetData, setTargetData] = useState<any>();
+  const [targetData, setTargetData] =
+    useState<any>();
 
   const { isLoading, isError, data } = useQuery({
     queryKey: [
@@ -77,14 +91,12 @@ function ProductDetailPage() {
   const formattedPrice: string | undefined =
     price?.toLocaleString();
 
-
-
-
-
   return (
     <>
       {isOpen && (
-        <ReviewModal targetReviewData={targetData}/>
+        <ReviewModal
+          targetReviewData={targetData}
+        />
       )}
       <Wrap>
         <Header />
@@ -231,8 +243,8 @@ function ProductDetailPage() {
                     </div>
                   </div>
                   <div
-                      className={'reviewrite'}
-                      onClick={handleClickShowModal}
+                    className={'reviewrite'}
+                    onClick={handleClickShowModal}
                   >
                     리뷰 작성
                   </div>
@@ -267,7 +279,9 @@ function ProductDetailPage() {
                     <RivScor>
                       <RivDetailBox>
                         <p>5점</p>
-                        <div className={'bar1'}></div>
+                        <div
+                          className={'bar1'}
+                        ></div>
                         <div
                           className={'bar4'}
                         ></div>
@@ -292,12 +306,16 @@ function ProductDetailPage() {
                       </RivDetailBox>
                       <RivDetailBox>
                         <p>2점</p>
-                        <div className={'bar5'}></div>
+                        <div
+                          className={'bar5'}
+                        ></div>
                         <p>0</p>
                       </RivDetailBox>
                       <RivDetailBox>
                         <p>1점</p>
-                        <div className={'bar5'}></div>
+                        <div
+                          className={'bar5'}
+                        ></div>
                         <p>0</p>
                       </RivDetailBox>
                     </RivScor>
@@ -306,42 +324,65 @@ function ProductDetailPage() {
               </Center>
               <Line1></Line1>
               <div>
-                 {data?.reviews &&
-                  !!data.reviews.length ? (
+                {data?.reviews &&
+                !!data.reviews.length ? (
                   data.reviews.map(
                     (review, index) => (
-                        <ReiveOutput key={index}>
-                          <ReviewPr>
-                            <div><CgProfile size={'24px'} color={'#757575'} /></div>
-                            <div className={'space'}>
-                              <Cloum>
-                                <span className={'margin'}>{review.nickname}</span>
-                                <span className="review">{review.rating}</span>
-                              </Cloum>
-                              <span onClick={() => {
-                                setTargetData(review);
-                                dispatch(openModal());
-                              }}>
-                          수정하기
-                        </span>
-                            </div>
-                          </ReviewPr>
-                          <RevieCont>{review.contents}</RevieCont>
-                          <Line1></Line1>
-                        </ReiveOutput>
+                      <ReiveOutput key={index}>
+                        <ReviewPr>
+                          <div>
+                            <CgProfile
+                              size={'24px'}
+                              color={'#757575'}
+                            />
+                          </div>
+                          <div
+                            className={'space'}
+                          >
+                            <Cloum>
+                              <span
+                                className={
+                                  'margin'
+                                }
+                              >
+                                {review.nickname}
+                              </span>
+                              <span className="review">
+                                {review.rating}
+                              </span>
+                            </Cloum>
+                            <span
+                              onClick={() => {
+                                setTargetData(
+                                  review,
+                                );
+                                dispatch(
+                                  openModal(),
+                                );
+                              }}
+                            >
+                              수정하기
+                            </span>
+                          </div>
+                        </ReviewPr>
+                        <RevieCont>
+                          {review.contents}
+                        </RevieCont>
+                        <Line1></Line1>
+                      </ReiveOutput>
                     ),
                   )
-                 ) : (
-                     <div>
-                       리뷰가 존재하지 않습니다.
-                     </div>
-                 )}
+                ) : (
+                  <div>
+                    리뷰가 존재하지 않습니다.
+                  </div>
+                )}
               </div>
             </Container>
           </ReivewWrap>
         </Container>
         <ReivewBar>
-            <div className={'rv'}>리뷰</div>
+          <div className={'rv'}>리뷰</div>
         </ReivewBar>
       </Wrap>
     </>
@@ -349,5 +390,3 @@ function ProductDetailPage() {
 }
 
 export default ProductDetailPage;
-
-

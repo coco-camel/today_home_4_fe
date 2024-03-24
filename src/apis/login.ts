@@ -19,6 +19,7 @@ export const signUp = async (
     console.log(error);
   }
 };
+
 export const login = async (user: LoginUser) => {
   try {
     const res = await authInstance.post(
