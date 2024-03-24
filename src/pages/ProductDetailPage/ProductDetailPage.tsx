@@ -21,6 +21,12 @@ import {
 } from './ProductDetailPage2.styled';
 import Flex from '../../components/layer/Flex';
 import { TbHome } from 'react-icons/tb';
+import { CgProfile } from 'react-icons/cg';
+import {
+  ReivewBar,
+  RevieCont,
+} from './ProductDetailPage.styled';
+
 import {
   Box,
   Brandbutton,
@@ -29,7 +35,6 @@ import {
   BrandWrap,
   Center,
   CouponBox,
-  FlexContainer,
   FlexWrap,
   Line,
   ProductSpan,
@@ -37,15 +42,17 @@ import {
   ReivewWrap,
   ReviewBlock,
   ReviewBox,
+  ReviewPr,
   ReviewStar,
   RivDetailBox,
   RivScor,
-  SpaceBtween,
   StarBox,
 } from './ProductDetailPage.styled';
+
 import { GoStarFill } from 'react-icons/go';
 import { RiCoupon2Line } from 'react-icons/ri';
-import { number } from 'prop-types';
+import { Cloum } from './ProductDetailPage.styled';
+import { Line1 } from './ProductDetailPage.styled';
 
 function ProductDetailPage() {
   const params = useParams();
@@ -54,7 +61,8 @@ function ProductDetailPage() {
     (state: { modal: ModalState }) =>
       state.modal.isOpen,
   );
-  const [targetData, setTargetData] = useState();
+  const [targetData, setTargetData] =
+    useState<any>();
 
   const { isLoading, isError, data } = useQuery({
     queryKey: [
@@ -87,11 +95,7 @@ function ProductDetailPage() {
     <>
       {isOpen && (
         <ReviewModal
-        // targetReviewData={{
-        //   contents: data?.review.contents,
-        //   nickname: data?.review.nickname,
-        //   rating: data?.review.rating,
-        // }}
+          targetReviewData={targetData}
         />
       )}
       <Wrap>
@@ -218,20 +222,6 @@ function ProductDetailPage() {
                     </Brandbutton>
                   </BrandWrap>
                 </Flex>
-                {/*<SpaceBtween>*/}
-                {/*  <button>*/}
-                {/*    <span></span>*/}
-                {/*    <span>쿠폰받기</span>*/}
-                {/*  </button>*/}
-                {/*</SpaceBtween>*/}
-                {/*<SpaceBtween>*/}
-                {/*  <span className={'text'}>*/}
-                {/*    주문금액*/}
-                {/*  </span>*/}
-                {/*  <span className={'number'}>*/}
-                {/*    0원*/}
-                {/*  </span>*/}
-                {/*</SpaceBtween>*/}
                 <Flex>
                   <button className={'baButton'}>
                     장바구니
@@ -247,8 +237,10 @@ function ProductDetailPage() {
             <Container>
               <ReviewBlock>
                 <ReviewBox>
-                  <div className={'review'}>
-                    리뷰
+                  <div className={'Box'}>
+                    <div className={'review'}>
+                      리뷰
+                    </div>
                   </div>
                   <div
                     className={'reviewrite'}
@@ -330,31 +322,53 @@ function ProductDetailPage() {
                   </StarBox>
                 </ReviewStar>
               </Center>
+              <Line1></Line1>
               <div>
-                {/* {data?.reviews &&
-                data.reviews.length > 0 ? (
+                {data?.reviews &&
+                !!data.reviews.length ? (
                   data.reviews.map(
                     (review, index) => (
-                      //키 값 바꿔
                       <ReiveOutput key={index}>
-                        <span
-                          onClick={() => {
-                            setTargetData(review);
-                            dispatch(openModal());
-                          }}
-                        >
-                          수정하기
-                        </span>
-                        <div>프로필</div>
-                        <span>
-                          {review.nickname}
-                        </span>
-                        <span>
+                        <ReviewPr>
+                          <div>
+                            <CgProfile
+                              size={'24px'}
+                              color={'#757575'}
+                            />
+                          </div>
+                          <div
+                            className={'space'}
+                          >
+                            <Cloum>
+                              <span
+                                className={
+                                  'margin'
+                                }
+                              >
+                                {review.nickname}
+                              </span>
+                              <span className="review">
+                                {review.rating}
+                              </span>
+                            </Cloum>
+                            <span
+                              onClick={() => {
+                                setTargetData(
+                                  review,
+                                );
+                                dispatch(
+                                  openModal(),
+                                );
+                              }}
+                            >
+                              수정하기
+                            </span>
+                          </div>
+                        </ReviewPr>
+                        <RevieCont>
                           {review.contents}
-                        </span>
-                        <span className="review">
-                          {review.rating}
-                        </span>
+                        </RevieCont>
+                        <Line1></Line1>
                       </ReiveOutput>
                     ),
                   )
@@ -362,19 +376,17 @@ function ProductDetailPage() {
                   <div>
                     리뷰가 존재하지 않습니다.
                   </div>
-                )} */}
-                <div>별</div>
+                )}
               </div>
             </Container>
           </ReivewWrap>
         </Container>
+        <ReivewBar>
+          <div className={'rv'}>리뷰</div>
+        </ReivewBar>
       </Wrap>
     </>
   );
 }
 
 export default ProductDetailPage;
-
-//서버에 보내기전에 데이터를 담는다
-//수정할 리뷰 데이터를 넘긴다
-//팝업 띄우기
