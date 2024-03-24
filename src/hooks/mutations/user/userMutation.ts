@@ -4,16 +4,15 @@ import {
   logout,
   signUp,
 } from '../../../apis/login';
+import useUserStore from '../../../store/userStore';
 
 export const useSignUp = () => {
   return useMutation({
     mutationFn: signUp,
     onSuccess: () => {},
-    onError: (error) => {
-      console.log(error);
-    },
   });
 };
+
 export const useLogin = () => {
   return useMutation({
     mutationFn: login,
@@ -23,10 +22,8 @@ export const useLogin = () => {
           'accessToken',
           data?.headers['authorization'],
         );
+        useUserStore.getState().logIn();
       }
-    },
-    onError: (error) => {
-      console.log(error);
     },
   });
 };
@@ -36,9 +33,7 @@ export const useLogout = () => {
     mutationFn: logout,
     onSuccess: () => {
       localStorage.removeItem('accessToken');
-    },
-    onError: (error) => {
-      console.log(error);
+      useUserStore.getState().logOut();
     },
   });
 };
