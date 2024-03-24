@@ -4,36 +4,37 @@ import FilterButton from './FilterButton';
 import productAPI from '../../apis/product';
 import {
   useInfiniteQuery,
-  // useInfiniteQuery,
   useMutation,
   // useQueryClient,
 } from '@tanstack/react-query';
-import InfiniteScroll from 'react-infinite-scroll-component';
+// import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
 import { Product } from '../../interfaces/product/product.interface';
 import bookMarkAPI from '../../apis/bookmark';
+// import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Products = () => {
   // 전체상품 조회
-  const getProductAll = async (
-    pageParam: number,
-  ) => {
+  const getProductAll = async (page: number) => {
     const { data } =
-      await productAPI.getProductAll(pageParam);
+      await productAPI.getProductAll(page);
+
     return data.data.products;
   };
+
+  // 무한스크롤
   const {
-    data: products,
+    data,
     fetchNextPage,
-    hasNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery(
-    ['page'],
-    ({ pageParam = 1 }) =>
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['projects'],
+    queryFn: ({ pageParam }) =>
       getProductAll(pageParam),
- 
-  );
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.nextCursor,
+  });
 
   // 북마크 등록
   const addBookMark = async (
@@ -79,10 +80,10 @@ const Products = () => {
   // if (!products) {
   //   return <div>Loading...</div>;
   // }
+  // if (isLoading) return <h3>로딩중</h3>;
+  // if (isError)
+  //   return <h3>잘못된 데이터 입니다.</h3>;
 
-  if (isLoading) return <h1>로딩중...</h1>;
-  if (isError)
-    return <h1>잘못된 데이터입니다...</h1>;
   return (
     <ProductSection>
       <h1>인기 상품</h1>
@@ -92,77 +93,75 @@ const Products = () => {
         }
         isTrue={isFreeDelivery}
       />
-      <InfiniteScroll
+      {/* <InfiniteScroll
         hasMore={hasNextPage}
-        ={() => fetchNextPage()}
-      >
-        <ProductWrap>
-          <ProductList>
-            {products.map((product: Product) => (
-              <ProductItem
-                key={product.productId}
-              >
-                <Link
-                  to={`detail/${product.productId}`}
-                ></Link>
-                <ImgWrap>
-                  <img
-                    src={product.imageUrl}
-                    alt=""
-                  />
-                  <ScrapBtn>
-                    <button
-                      onClick={() =>
-                        handleBookmarkClick(
-                          product.productId,
-                        )
-                      }
-                    ></button>
-                  </ScrapBtn>
-                </ImgWrap>
-                <ItemInfo>
-                  <ItemInfoHeader>
-                    <em>{product.brand}</em>
-                    <span>{product.name}</span>
-                  </ItemInfoHeader>
-                  <ItemPrice>
+        next={() => fetchNextPage()}
+      > */}
+      <ProductWrap>
+        <ProductList>
+          {data.map((product: Product) => (
+            <ProductItem key={product.productId}>
+              <Link
+                to={`detail/${product.productId}`}
+              ></Link>
+              <ImgWrap>
+                <img
+                  src={product.imageUrl}
+                  alt=""
+                />
+                <ScrapBtn>
+                  <button
+                    onClick={() =>
+                      handleBookmarkClick(
+                        product.productId,
+                      )
+                    }
+                  ></button>
+                </ScrapBtn>
+              </ImgWrap>
+              <ItemInfo>
+                <ItemInfoHeader>
+                  <em>{product.brand}</em>
+                  <span>{product.name}</span>
+                </ItemInfoHeader>
+                <ItemPrice>
+                  <span>
+                    {product.discount}
+                    <span>%</span>
+                  </span>
+                  <span>
+                    {product.price
+                      .toString()
+                      .replace(
+                        /\B(?=(\d{3})+(?!\d))/g,
+                        ',',
+                      )}
+                  </span>
+                </ItemPrice>
+                <ItemState>
+                  <p>
                     <span>
-                      {product.discount}
-                      <span>%</span>
+                      {product.averageRating.toFixed(
+                        1,
+                      )}
                     </span>
                     <span>
-                      {product.price
-                        .toString()
-                        .replace(
-                          /\B(?=(\d{3})+(?!\d))/g,
-                          ',',
-                        )}
+                      리뷰 {product.countReview}
                     </span>
-                  </ItemPrice>
-                  <ItemState>
-                    <p>
-                      <span>
-                        {product.averageRating.toFixed(
-                          1,
-                        )}
-                      </span>
-                      <span>
-                        리뷰 {product.countReview}
-                      </span>
-                    </p>
-                  </ItemState>
-                  <ItemBadgeWrap>
-                    <DeliveryBadge>
-                      무료배송
-                    </DeliveryBadge>
-                    <SaleBadge>특가</SaleBadge>
-                  </ItemBadgeWrap>
-                </ItemInfo>
-              </ProductItem>
-            ))}
-          </ProductList>
-        </ProductWrap>
-      </InfiniteScroll>
+                  </p>
+                </ItemState>
+                <ItemBadgeWrap>
+                  <DeliveryBadge>
+                    무료배송
+                  </DeliveryBadge>
+                  <SaleBadge>특가</SaleBadge>
+                </ItemBadgeWrap>
+              </ItemInfo>
+            </ProductItem>
+          ))}
+        </ProductList>
+      </ProductWrap>
+      {/* </InfiniteScroll> */}
     </ProductSection>
   );
 };
