@@ -3,42 +3,37 @@ import styled from 'styled-components';
 import FilterButton from './FilterButton';
 import productAPI from '../../apis/product';
 import {
+  useInfiniteQuery,
   // useInfiniteQuery,
   useMutation,
-  useQuery,
   // useQueryClient,
 } from '@tanstack/react-query';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
 import { Product } from '../../interfaces/product/product.interface';
 import bookMarkAPI from '../../apis/bookmark';
 
 const Products = () => {
   // 전체상품 조회
-  const getProductAll = async () => {
+  const getProductAll = async (
+    pageParam: number,
+  ) => {
     const { data } =
-      await productAPI.getProductAll();
-    // const { responseDto, hasNext } = data.data;
-    // return {
-    //   result: responseDto,
-    //   nextPage: pageParam + 1,
-    //   isLast: !hasNext,
-    // };
+      await productAPI.getProductAll(pageParam);
     return data.data.products;
   };
-  const { data: products } = useQuery({
-    queryKey: ['getProductsAll'],
-    queryFn: getProductAll,
-  });
-
-  // const {
-  //   data,
-  //   fetchNextPage,
-  //   isFetchingNextPage,
-  // } = useInfiniteQuery({
-  //   queryKey: [`productList`],
-  //   queryFn: ({ pageParam = 1 }) =>
-  //     getProductAll(pageParam),
-  // });
+  const {
+    data: products,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery(
+    ['page'],
+    ({ pageParam = 1 }) =>
+      getProductAll(pageParam),
+ 
+  );
 
   // 북마크 등록
   const addBookMark = async (
@@ -70,20 +65,6 @@ const Products = () => {
     createMutate(productId);
     //  deleteMutate(productId);
   };
-  //무한 스크롤
-  // const { data } = useInfiniteQuery({
-  //   queryKey: ['getProductsAll'],
-  //   queryFn: ({ pageParam = 1 }) =>
-  //     getProductAll(pageParam),
-  //   getNextPageParam: (lastPage) => {
-  //     if (!lastPage.isLast)
-  //       return lastPage.nextPage;
-  //     return undefined;
-  //   },
-  //   refetchOnWindowFocus: false,
-  //   refetchOnMount: true,
-  //   retry: 1,
-  // });
 
   // 무료배송 분류
   const [isFreeDelivery, setIsFreeDelivery] =
@@ -95,9 +76,13 @@ const Products = () => {
     setIsFreeDelivery(!isFreeDelivery);
   };
 
-  if (!products) {
-    return <div>Loading...</div>;
-  }
+  // if (!products) {
+  //   return <div>Loading...</div>;
+  // }
+
+  if (isLoading) return <h1>로딩중...</h1>;
+  if (isError)
+    return <h1>잘못된 데이터입니다...</h1>;
   return (
     <ProductSection>
       <h1>인기 상품</h1>
@@ -107,64 +92,77 @@ const Products = () => {
         }
         isTrue={isFreeDelivery}
       />
-      <ProductWrap>
-        <ProductList>
-          {products.map((product: Product) => (
-            <ProductItem key={product.productId}>
-              <Link
-                to={`detail/${product.productId}`}
-              ></Link>
-              <ImgWrap>
-                <img
-                  src={product.imageUrl}
-                  alt=""
-                />
-                <ScrapBtn>
-                  <button
-                    onClick={() =>
-                      handleBookmarkClick(
-                        product.productId,
-                      )
-                    }
-                  ></button>
-                </ScrapBtn>
-              </ImgWrap>
-              <ItemInfo>
-                <ItemInfoHeader>
-                  <em>{product.brand}</em>
-                  <span>{product.name}</span>
-                </ItemInfoHeader>
-                <ItemPrice>
-                  <span>
-                    {product.discount}
-                    <span>%</span>
-                  </span>
-                  <span>
-                    {product.price
-                      .toString()
-                      .replace(
-                        /\B(?=(\d{3})+(?!\d))/g,
-                        ',',
-                      )}
-                  </span>
-                </ItemPrice>
-                <ItemState>
-                  <p>
-                    <span>4.8</span>
-                    <span>리뷰 33,361</span>
-                  </p>
-                </ItemState>
-                <ItemBadgeWrap>
-                  <DeliveryBadge>
-                    무료배송
-                  </DeliveryBadge>
-                  <SaleBadge>특가</SaleBadge>
-                </ItemBadgeWrap>
-              </ItemInfo>
-            </ProductItem>
-          ))}
-        </ProductList>
-      </ProductWrap>
+      <InfiniteScroll
+        hasMore={hasNextPage}
+        ={() => fetchNextPage()}
+      >
+        <ProductWrap>
+          <ProductList>
+            {products.map((product: Product) => (
+              <ProductItem
+                key={product.productId}
+              >
+                <Link
+                  to={`detail/${product.productId}`}
+                ></Link>
+                <ImgWrap>
+                  <img
+                    src={product.imageUrl}
+                    alt=""
+                  />
+                  <ScrapBtn>
+                    <button
+                      onClick={() =>
+                        handleBookmarkClick(
+                          product.productId,
+                        )
+                      }
+                    ></button>
+                  </ScrapBtn>
+                </ImgWrap>
+                <ItemInfo>
+                  <ItemInfoHeader>
+                    <em>{product.brand}</em>
+                    <span>{product.name}</span>
+                  </ItemInfoHeader>
+                  <ItemPrice>
+                    <span>
+                      {product.discount}
+                      <span>%</span>
+                    </span>
+                    <span>
+                      {product.price
+                        .toString()
+                        .replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          ',',
+                        )}
+                    </span>
+                  </ItemPrice>
+                  <ItemState>
+                    <p>
+                      <span>
+                        {product.averageRating.toFixed(
+                          1,
+                        )}
+                      </span>
+                      <span>
+                        리뷰 {product.countReview}
+                      </span>
+                    </p>
+                  </ItemState>
+                  <ItemBadgeWrap>
+                    <DeliveryBadge>
+                      무료배송
+                    </DeliveryBadge>
+                    <SaleBadge>특가</SaleBadge>
+                  </ItemBadgeWrap>
+                </ItemInfo>
+              </ProductItem>
+            ))}
+          </ProductList>
+        </ProductWrap>
+      </InfiniteScroll>
     </ProductSection>
   );
 };
