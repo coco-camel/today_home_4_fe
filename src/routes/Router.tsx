@@ -6,6 +6,7 @@ import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
 import Layout from '../components/layout/Layout';
 import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
+import MyPage from '../pages/MyPage';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <Main />,
+          },
+          {
+            path: '/mypage',
+            element: <MyPage />,
           },
         ],
       },

@@ -1,9 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useSignUp } from '../../../hooks/mutations/user/userMutation';
-import {
-  Link,
-  useNavigate,
-} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   emailCheck,
   pwCheck,
@@ -16,6 +13,7 @@ import { duplicateTestConfirm } from '../../../apis/login';
 import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
 import NickNameInput from './NickNameInput';
+import HomeLogo from '../../../assets/icons/homelogo.svg';
 
 function SignupForm() {
   const [user, setUser] = useState<SignUpUser>({
@@ -135,9 +133,14 @@ function SignupForm() {
   return (
     <S.SignLayoutContainer>
       <S.HomeLogo>
-        <Link to="/">
-          <HomeIcon width={88} height={31} />
-        </Link>
+        <S.LogoLink to="/">
+          <HomeIcon width={31} height={31} />
+          <S.HomeIconText
+            src={HomeLogo}
+            alt=""
+            height="24"
+          />
+        </S.LogoLink>
       </S.HomeLogo>
       <S.SignContainer>
         <S.SignUpTitle>회원가입</S.SignUpTitle>

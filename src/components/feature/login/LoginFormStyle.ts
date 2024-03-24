@@ -28,6 +28,9 @@ export const Input = styled.input<{
     z-index: 2;
   }
 `;
+export const HomeIconText = styled.img`
+  margin-left: 10px;
+`;
 export const Button = styled.button`
   margin: 20px 0;
   width: 100%;
@@ -68,6 +71,13 @@ export const StyledLink = styled(Link)`
 export const LinkWarpper = styled.div`
   margin-bottom: 30px;
 `;
+
+export const LogoLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const LoginForm = styled.form`
   input {
     &:nth-child(1) {

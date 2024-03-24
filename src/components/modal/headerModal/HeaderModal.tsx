@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useLogout } from '../../../hooks/mutations/user/userMutation';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 interface HeaderModalProps {
   closeModal: () => void;
@@ -23,7 +24,6 @@ function HeaderModal({
     logoutMutation.mutate();
     closeModal();
   };
-
   useEffect(() => {
     document.addEventListener(
       'mousedown',
@@ -41,7 +41,9 @@ function HeaderModal({
     <div ref={modalRef}>
       <ModalWrap>
         <Modal>
-          <MyBtn>마이페이지</MyBtn>
+          <Link to="/mypage">
+            <MyBtn>마이페이지</MyBtn>
+          </Link>
           <MyBtn
             onClick={() => {
               handleLogoutClick();
