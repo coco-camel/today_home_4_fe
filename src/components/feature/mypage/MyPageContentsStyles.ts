@@ -18,6 +18,7 @@ export const ImgWrap = styled.picture`
 `;
 export const ScrapItem = styled.li`
   position: relative;
+  min-width: 150px;
   a {
     display: block;
     position: absolute;
