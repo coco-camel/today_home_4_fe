@@ -5,6 +5,7 @@ import {
   signUp,
 } from '../../../apis/login';
 import useUserStore from '../../../store/userStore';
+import { AxiosResponse } from 'axios';
 
 export const useSignUp = () => {
   return useMutation({
@@ -17,10 +18,11 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
+      const response = data as AxiosResponse;
       if (data) {
         localStorage.setItem(
           'accessToken',
-          data?.headers['authorization'],
+          response.headers['authorization'],
         );
         useUserStore.getState().logIn();
       }

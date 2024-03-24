@@ -5,6 +5,7 @@ import type {
   DuplicateTestCheck,
 } from '../interfaces/user/user.interface';
 import { AxiosError } from 'axios';
+import { ErrorResponse } from 'react-router-dom';
 
 export const signUp = async (
   user: SignUpUser,
@@ -28,7 +29,8 @@ export const login = async (user: LoginUser) => {
     );
     return res;
   } catch (error) {
-    const axiosError = error as AxiosError<any>;
+    const axiosError =
+      error as AxiosError<ErrorResponse>;
     if (axiosError.response) {
       const result =
         axiosError.response.data.status;
