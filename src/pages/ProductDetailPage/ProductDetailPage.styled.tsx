@@ -9,6 +9,7 @@ export const Wrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+    position: relative;
   //height: 533px;
 `;
 
@@ -97,7 +98,7 @@ export const ReivewWrap = styled.div`
 
 export const ReviewBlock = styled.div`
   display: flex;
-  margin-top: 300px;
+    margin-top: 400px;
 `;
 
 export const SpaceBtween = styled.div`
@@ -211,6 +212,7 @@ export const RivScor = styled.div`
 
 export const ReviewStar = styled.div`
   display: flex;
+    margin-bottom: 10px;
 `;
 
 export const RivDetailBox = styled.div`
@@ -270,4 +272,68 @@ export const RivDetailBox = styled.div`
   }
 `;
 
-export const ReiveOutput = styled.div``;
+
+
+export const ReviewPr = styled.div `
+display: flex;
+    align-items: center;
+`
+
+export const Cloum = styled.div`
+display: flex;flex-direction: column;
+    margin-left: 8px;
+    .margin{
+        margin-bottom: 6px;
+    }
+`
+
+export const ReiveOutput = styled.div`
+    margin-top: 20px;
+.space{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 13px;
+    color: #757575;
+}
+`;
+
+export const RevieCont = styled.div`
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: normal;
+    color: #424242;
+    margin: 20px 0 8px 0;
+`
+export const Line1 = styled.hr`
+  border: 1px solid #ededed;
+  margin-top: 18px;
+  width: 100%;
+`;
+
+export const ReivewBar = styled.div `
+    margin-top: 300px;
+    background-color: #f7f8fa;
+    height: 51px;
+    font-size: 15px;
+    width: 100%;
+    position: absolute;
+    top: 900px;
+    left: 0;
+    border: 1px solid #dadce0;
+    
+   
+    
+    
+    .rv{
+        display: flex;
+        max-width: 32px;
+        margin-left: 654px;
+        width: 80px;
+        align-items: center;
+        height: 100%;
+        color: #35c5f0;
+        border-bottom: 2px solid #35c5f0;
+        z-index: 1;
+    }
+`

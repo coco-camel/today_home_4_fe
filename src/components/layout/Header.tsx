@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ArroDownIcon from '../../assets/icons/simple-line-icons_arrow-up.svg';
 import HomeLogo from '../../assets/icons/homelogo.svg';
+import ScrapIcon from '../../assets/icons/scrapIcon.svg';
 import { Link } from 'react-router-dom';
-import { useLogout } from '../../hooks/mutations/user/userMutation';
+import HeaderModal from '../modal/headerModal/HeaderModal';
+import useUserStore from '../../store/userStore';
+import { CgProfile } from 'react-icons/cg';
+
+interface ModalWarpProps {
+  $isOpen: boolean;
+}
 
 const Header = () => {
-  const isLogined: string = localStorage.getItem(
-    'accessToken',
-  ) as string;
-  const logoutMutation = useLogout();
-  const handleLogoutClick = () => {
-    logoutMutation.mutate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const isLoggedIn = useUserStore(
+    (state) => state.isLoggedIn,
+  );
+
+  const HandleMyPageClick = () => {
+    setIsOpen(true);
   };
+
   return (
     <HeaderWrap>
       <HeaderTop>
@@ -33,7 +43,7 @@ const Header = () => {
               </ul>
             </Nav>
             <UserActs>
-              {!isLogined ? (
+              {!isLoggedIn ? (
                 <MemberShip>
                   <Link to="/login">로그인</Link>
                   <Link to="/signup">
@@ -47,30 +57,45 @@ const Header = () => {
                       to=""
                       aria-label="스크랩북 페이지 링크 버튼"
                     >
-                      ㅎㅎ
+                      <img
+                        src={ScrapIcon}
+                        alt=""
+                      />
                     </Link>
                   </ScrapBookLink>
                   <MypageBtn>
-                    <button aria-label="마이페이지 모달 버튼">
-                      ㅎㅎ
-                    </button>
+                    <MyPageBtn
+                      onClick={HandleMyPageClick}
+                      aria-label="마이페이지 모달 버튼"
+                    >
+                      <MyImg>
+                        <CgProfile
+                          size={'100px'}
+                          color={'#757575'}
+                        />
+                      </MyImg>
+                    </MyPageBtn>
                   </MypageBtn>
-                  <button
-                    onClick={handleLogoutClick}
-                  >
-                    로그아웃
-                  </button>
                 </MyPages>
               )}
+              <ModalWarp $isOpen={isOpen}>
+                {/* <ModalPortal> */}
+                <HeaderModal
+                  closeModal={() =>
+                    setIsOpen(false)
+                  }
+                />
+                {/* </ModalPortal> */}
+              </ModalWarp>
               <WriteBtn>
                 <button>
                   <span>글쓰기</span>
-                  <ArrowDwonIcon>
+                  <ArrowDownIcon>
                     <img
                       src={ArroDownIcon}
                       alt=""
                     />
-                  </ArrowDwonIcon>
+                  </ArrowDownIcon>
                 </button>
               </WriteBtn>
             </UserActs>
@@ -92,6 +117,31 @@ const Header = () => {
   );
 };
 
+const MyImg = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+const ModalWarp = styled.div<ModalWarpProps>`
+  visibility: ${({ $isOpen }) =>
+    $isOpen ? 'visible' : 'hidden'};
+  opacity: ${({ $isOpen }) =>
+    $isOpen ? '1' : '0'};
+  transform: ${({ $isOpen }) =>
+    $isOpen
+      ? 'translate(0, 12px)'
+      : 'translate(0, 0)'};
+  transition:
+    transform 0.4s ease,
+    opacity 0.4s ease,
+    visibility 0.4s ease;
+`;
+const MyPageBtn = styled.button`
+  border-radius: 100%;
+  width: 50px;
+  height: 50px;
+`;
 const HeaderWrap = styled.header`
   position: relative;
 `;
@@ -114,7 +164,7 @@ const StickyHeader = styled.div`
   transition: top 0.1s ease 0s;
   border-bottom: 1px solid #f1f1f1;
   background: #fff;
-  z-index: 1000;
+  z-index: 2000;
 `;
 const Logo = styled.div`
   h1 {
@@ -146,10 +196,18 @@ const UserActs = styled.div`
 const MyPages = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 10px 0 8px;
+  margin: 0 40px 0 8px;
 `;
-const ScrapBookLink = styled.div``;
-const MypageBtn = styled.div``;
+const ScrapBookLink = styled.div`
+  margin: 0 10px;
+`;
+const MypageBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+`;
 const MemberShip = styled.div`
   display: flex;
   align-items: center;
@@ -182,7 +240,7 @@ const WriteBtn = styled.div`
     }
   }
 `;
-const ArrowDwonIcon = styled.span`
+const ArrowDownIcon = styled.span`
   width: 14px;
   img {
     width: 100%;
