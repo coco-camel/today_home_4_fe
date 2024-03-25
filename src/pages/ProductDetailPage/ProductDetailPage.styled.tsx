@@ -258,7 +258,7 @@ export const RivDetailBox = styled.div`
     display: inline-block;
     background-color: #35c5f0;
     max-width: 100%;
-    width: 8%;
+    width: 4.7%;
     height: 5px;
     margin-left: 20px;
   }
@@ -284,6 +284,15 @@ display: flex;flex-direction: column;
     margin-left: 8px;
     .margin{
         margin-bottom: 6px;
+    }
+    .flex{
+        display: flex;
+        align-content: center;
+    }
+    
+    .create{
+        margin: 2px 0 0 10px;
+        font-size: 15px;
     }
 `
 

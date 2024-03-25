@@ -25,4 +25,5 @@ export const putModifyReview = async ({
     `/api/v1/reviews/${id}`,
     { contents, rating },
   );
+  return data;
 };
