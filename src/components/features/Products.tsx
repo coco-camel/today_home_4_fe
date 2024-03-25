@@ -45,6 +45,15 @@ const Products = () => {
       return undefined;
     },
   });
+  const products = useMemo(() => {
+    let list: any[] = [];
+    product &&
+      product.pages.forEach(
+        ({ result }) =>
+          (list = [...list, ...result]),
+      );
+    return list;
+  }, [product]);
 
   // 무료배송 분류
   const [isFreeDelivery, setIsFreeDelivery] =
@@ -55,6 +64,9 @@ const Products = () => {
     setIsFreeDelivery(!isFreeDelivery);
   };
 
+  // 북마크 useState
+  // const [isBookMark, setIsBookMark] =
+  //   useState(false);
   // 북마크 등록
   const addBookMark = async (
     productId: number,
@@ -66,23 +78,28 @@ const Products = () => {
   const { mutate: createMutate } = useMutation({
     mutationFn: addBookMark,
     onSuccess: () => {},
+    onError: (error) => {
+      error.response.data.status === false && 
+    },
   });
+  //북마크 삭제
+  // const delBookMark = async (
+  //   productId: number,
+  // ) => {
+  //   const { data } =
+  //     await bookMarkAPI.addBookMark(productId);
+  //   return data.data;
+  // };
+  // const { mutate: deleteMutate } = useMutation({
+  //   mutationFn: delBookMark,
+  //   onSuccess: () => {},
+  // });
 
   const handleBookmarkClick = (
     productId: number,
   ) => {
     createMutate(productId);
   };
-
-  const products = useMemo(() => {
-    let list: any[] = [];
-    product &&
-      product.pages.forEach(
-        ({ result }) =>
-          (list = [...list, ...result]),
-      );
-    return list;
-  }, [product]);
 
   if (!product) {
     return <div>Loading...</div>;
