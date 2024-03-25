@@ -1,5 +1,5 @@
 import React from 'react';
-import Products from '../components/features/Products';
+import Products from '../components/feature/main/Products';
 
 function Main() {
   return (
