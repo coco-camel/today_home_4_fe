@@ -54,7 +54,7 @@ const Header = () => {
                 <MyPages>
                   <ScrapBookLink>
                     <Link
-                      to=""
+                      to="/mypage"
                       aria-label="스크랩북 페이지 링크 버튼"
                     >
                       <img

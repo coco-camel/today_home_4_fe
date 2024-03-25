@@ -1,13 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { LoginUser } from '../../../interfaces/user/user.interface';
 import { useLogin } from '../../../hooks/mutations/user/userMutation';
-import {
-  Link,
-  useNavigate,
-} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { emailCheck } from '../../../utils/regex/regex';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './LoginFormStyle';
+import HomeLogo from '../../../assets/icons/homelogo.svg';
 
 function LoginForm() {
   const [user, setUser] = useState<LoginUser>({
@@ -92,9 +90,14 @@ function LoginForm() {
   return (
     <S.LoginContainer>
       <S.LinkWarpper>
-        <Link to="/">
-          <HomeIcon width={147} height={50} />
-        </Link>
+        <S.LogoLink to="/">
+          <HomeIcon width={50} height={50} />
+          <S.HomeIconText
+            src={HomeLogo}
+            alt=""
+            height="35"
+          />
+        </S.LogoLink>
       </S.LinkWarpper>
       <S.LoginForm onSubmit={handleLoginClick}>
         <S.Input
