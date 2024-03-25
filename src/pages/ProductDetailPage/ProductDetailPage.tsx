@@ -163,11 +163,11 @@ function ProductDetailPage() {
                   size={'28px'}
                   onClick={() =>
                     handleBookmarkClick(
-                      params?.productId,
+                      Number(params?.productId),
                     )
                   }
                 />
-              </Flex>
+              </Flex>atp
               <Flex
                 $dc={true}
                 $js={true}
