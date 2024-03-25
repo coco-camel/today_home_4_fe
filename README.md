@@ -6,7 +6,10 @@
 
 ***
 ## 오늘의집 클론코딩 (오늘내집)
+> 시연 영상: https://www.youtube.com/watch?v=euvHv47jnUY&t=1s   <br/>
+> 배포 주소: https://today-home-4-fe.vercel.app/
 
+> BE: https://github.com/openmpy/bucketplace-clone
 
 - 회원 가입
 - 로그인 
