@@ -13,6 +13,7 @@ export interface Product {
   name: string;
   price: number;
   productId: number;
+  isBookmarked: boolean;
 }
 
 export interface Reviews {

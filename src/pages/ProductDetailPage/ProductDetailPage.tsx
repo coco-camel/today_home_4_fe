@@ -12,7 +12,7 @@ import { ModalState } from '../../interfaces/productDetail/productDetail.interfa
 import Header from '../../components/layout/Header';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { selectiveproduct } from '../../apis/productDetail';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { FaRegBookmark } from "react-icons/fa";
 import {
@@ -58,13 +58,13 @@ import useUserStore from '../../store/userStore';
 import bookMarkAPI from '../../apis/bookmark';
 
 
+
+
 function ProductDetailPage() {
   const params = useParams();
   const dispatch = useDispatch();
-  const isOpen = useSelector(
-    (state: { modal: ModalState }) =>
-      state.modal.isOpen,
-  );
+  const isOpen = useSelector((state: { modal: ModalState }) => state.modal.isOpen);
+
 
   const isLoggedIn = useUserStore(
     (state) => state.isLoggedIn,
@@ -72,7 +72,9 @@ function ProductDetailPage() {
   const [targetData, setTargetData] =
     useState<any>();
 
-  const { data } = useQuery({
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const queryDetail = useQuery({
     queryKey: [
       'getProductDetail',
       params?.productId,
@@ -83,42 +85,65 @@ function ProductDetailPage() {
     enabled: !!params.productId,
   });
 
-  const navigate = useNavigate()
+  const { data } = queryDetail;
+
   useEffect(() => {
     if (data) {
-      console.log(data);
+      setIsBookmarked(data?.product.isBookmarked);
     }
   }, [data]);
 
-  const addBookMark = async (
-    productId: number,
-  ) => {
-    const { data } =
-      await bookMarkAPI.addBookMark(productId);
+  const addBookMark = async (productId: number,) => {
+    const { data } = await bookMarkAPI.addBookMark(productId);
     return data.data;
   };
-  const { mutate: createMutate } = useMutation({
+  const { mutate: mutateAddBookmark } = useMutation({
     mutationFn: addBookMark,
     onSuccess: (
-    ) => {console.log('성공')},
+    ) => {
+      queryDetail.refetch().then(() => {
+        console.log('성공')
+      });
+    }
+  });
+  const delBookMark = async (productId: number,) => {
+    const { data } = await bookMarkAPI.delBookMark(productId);
+    return data;
+  };
+
+  const { mutate: deleteBookmark} = useMutation({
+    mutationFn: delBookMark,
+    onSuccess: () => {
+      console.log('취소 성공')
+    }
   });
 
-  const handleBookmarkClick = (
-    productId: number,
-  ) => {
-    createMutate(productId);
-    navigate('/');
+  const handleBookmarkClick = () => {
+    const productId = Number(params?.productId);
+
+    if (!productId) return;
+
+    if (isBookmarked) {
+      deleteBookmark(productId, {
+        onSuccess: () => {
+          setIsBookmarked(prev => !prev);
+        }
+      });
+    } else {
+      mutateAddBookmark(productId, {
+        onSuccess: () => {
+          setIsBookmarked(prev => !prev);
+        }
+      });
+    }
   };
 
   const handleClickShowModal = () => {
     dispatch(openModal());
   };
 
-  const price: number | undefined =
-    data?.product.price;
-
-  const formattedPrice: string | undefined =
-    price?.toLocaleString();
+  const price: number | undefined = data?.product.price;
+  const formattedPrice: string | undefined = price?.toLocaleString();
 
   return (
     <>
@@ -159,15 +184,13 @@ function ProductDetailPage() {
                     {data?.product.name}
                   </ProductSpan>
                 </Flex>
-                <FaRegBookmark
-                  size={'28px'}
-                  onClick={() =>
-                    handleBookmarkClick(
-                      Number(params?.productId),
-                    )
-                  }
-                />
-              </Flex>atp
+                {isLoggedIn && (
+                  <FaRegBookmark
+                    size={'28px'}
+                    onClick={handleBookmarkClick}
+                  />
+                )}
+              </Flex>
               <Flex
                 $dc={true}
                 $js={true}
