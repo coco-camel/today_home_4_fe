@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 // import FilterButton from './FilterButton';
 import productAPI from '../../../apis/product';
@@ -12,9 +12,17 @@ import { Link } from 'react-router-dom';
 import { Product } from '../../../interfaces/product/product.interface';
 import bookMarkAPI from '../../../apis/bookmark';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import useUserStore from '../../../store/userStore';
 const Products = () => {
-  // 전체상품 조회
+  const isLoggedIn = useUserStore(
+    (state) => state.isLoggedIn,
+  );
 
+  useEffect(() => {
+    getProductAll;
+  }, [isLoggedIn]);
+
+  // 전체상품 조회
   const getProductAll = async (
     pageParam: number,
   ) => {
