@@ -53,6 +53,9 @@ import { GoStarFill } from 'react-icons/go';
 import { RiCoupon2Line } from 'react-icons/ri';
 import { Cloum } from './ProductDetailPage.styled';
 import { Line1 } from './ProductDetailPage.styled';
+import useUserStore from '../../store/userStore';
+import create from 'zustand';
+import ScrapIcon from '../../assets/icons/scrapIcon.svg';
 
 function ProductDetailPage() {
   const params = useParams();
@@ -61,10 +64,14 @@ function ProductDetailPage() {
     (state: { modal: ModalState }) =>
       state.modal.isOpen,
   );
+
+  const isLoggedIn = useUserStore(
+    (state) => state.isLoggedIn,
+  );
   const [targetData, setTargetData] =
     useState<any>();
 
-  const { isLoading, isError, data } = useQuery({
+  const { data } = useQuery({
     queryKey: [
       'getProductDetail',
       params?.productId,
@@ -74,6 +81,7 @@ function ProductDetailPage() {
     select: (response) => response.data,
     enabled: !!params.productId,
   });
+
 
   useEffect(() => {
     if (data) {
@@ -130,7 +138,10 @@ function ProductDetailPage() {
                     {data?.product.name}
                   </ProductSpan>
                 </Flex>
-                <button>찜</button>
+                <img
+                  src={ScrapIcon}
+                  alt=""
+                />
               </Flex>
               <Flex
                 $dc={true}
@@ -242,12 +253,16 @@ function ProductDetailPage() {
                       리뷰
                     </div>
                   </div>
-                  <div
-                    className={'reviewrite'}
-                    onClick={handleClickShowModal}
-                  >
-                    리뷰 작성
-                  </div>
+                  {isLoggedIn && (
+                    <div
+                      className={'reviewrite'}
+                      onClick={
+                        handleClickShowModal
+                      }
+                    >
+                      리뷰 작성
+                    </div>
+                  )}
                 </ReviewBox>
               </ReviewBlock>
               <Center>
@@ -347,9 +362,20 @@ function ProductDetailPage() {
                               >
                                 {review.nickname}
                               </span>
-                              <span className="review">
-                                {review.rating}
+                              <div className={'flex'}>
+                                <span className="review">
+                                {Array(review.rating)
+                                  .fill(null)
+                                  .map((_, index) => (
+                                    <GoStarFill
+                                      key={index}
+                                      color={'#35c5f0'}
+                                      size={'21px'}
+                                    />
+                                  ))}
                               </span>
+                                <span className={'create'}>{review.createdAt}</span>
+                              </div>
                             </Cloum>
                             <span
                               onClick={() => {

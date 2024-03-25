@@ -20,4 +20,5 @@ export interface Reviews {
   contents: string;
   rating: number;
   reviewId : number;
+  createdAt: string;
 }
