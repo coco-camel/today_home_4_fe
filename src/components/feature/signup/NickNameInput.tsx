@@ -1,33 +1,24 @@
 import React from 'react';
 import * as S from './SignUpFormStyle';
-import { SignUpUser } from '../../../interfaces/user/user.interface';
 import { signUpNickNameCheck } from '../../../utils/regex/regex';
 import { duplicateTestConfirm } from '../../../apis/login';
-
+import { useSignUpContext } from './SignUpContext';
 interface NickNameInputProps {
-  user: SignUpUser;
-  setUser: React.Dispatch<
-    React.SetStateAction<SignUpUser>
-  >;
-  hasNickName: boolean;
-  setHasNickName: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-  setNickNameChecked: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-  nickNameChecked: boolean;
-  nickNameInputRef: React.MutableRefObject<HTMLInputElement | null>;
+  nickNameInputRef: React.RefObject<HTMLInputElement>;
 }
+
 function NickNameInput({
-  user,
-  setUser,
-  hasNickName,
-  setHasNickName,
-  setNickNameChecked,
-  nickNameChecked,
   nickNameInputRef,
 }: NickNameInputProps) {
+  const {
+    user,
+    setUser,
+    hasNickName,
+    setHasNickName,
+    setNickNameChecked,
+    nickNameChecked,
+  } = useSignUpContext();
+
   const handleNicknameChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {

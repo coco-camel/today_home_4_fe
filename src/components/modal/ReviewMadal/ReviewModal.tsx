@@ -3,13 +3,15 @@ import ModalTemplate from '../../templates/Modal/ModalTemplate';
 import {StarBox, Wrap} from '../../../pages/ProductDetailPage/ProductDetailPage.styled';
 import {GoStarFill} from 'react-icons/go';
 import {Dimmed} from '../../templates/Modal/Modal.styled';
-import {useMutation, useQuery, useQueryClient,} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {selectiveproduct} from '../../../apis/productDetail';
-import {useNavigate, useParams} from 'react-router-dom';
-import {postAddReview} from '../../../apis/review';
+import { useParams} from 'react-router-dom';
+import { postAddReview, putModifyReview } from '../../../apis/review';
 import {ReivewInputData} from '../../../interfaces/modal/ReviewModal.interface';
 import {FlexCloumBox, ImgBox, ModalBox, ReviewProduct, Sbmitbutton, TitleBox} from './ReviewModal.styled';
 import {Reviews} from '../../../interfaces/api/product/response/index.interface'
+import { useDispatch } from 'react-redux';
+import { closeModal } from '../../../redux/modules/modal';
 
 const ReviewModal = ({targetReviewData}: {targetReviewData?: Reviews}) => {
   const [hoverIndex, setHoverIndex] = useState<number>(-1);
@@ -25,7 +27,6 @@ const ReviewModal = ({targetReviewData}: {targetReviewData?: Reviews}) => {
   });
 
   const params = useParams();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (targetReviewData) {
@@ -49,7 +50,7 @@ const ReviewModal = ({targetReviewData}: {targetReviewData?: Reviews}) => {
     enabled: !!params.productId,
   });
 
-  const { isLoading, isError, data } = queryDetail
+  const { data } = queryDetail
 
 
 
@@ -99,7 +100,7 @@ const ReviewModal = ({targetReviewData}: {targetReviewData?: Reviews}) => {
       );
 
 
-const navigate = useNavigate()
+const dispatch = useDispatch()
 
   const reviewMutaion = useMutation({
     mutationFn: postAddReview,
@@ -109,20 +110,39 @@ const navigate = useNavigate()
     },
   });
 
+  const reviewUpdateMutaion = useMutation({
+    mutationFn:putModifyReview,
+    onSuccess: () => {
+      queryDetail.refetch();
+      console.log('update');
+  }
+  });
+
+
+
   const handleClickSubmit = () => {
-    navigate(`/detail/${data?.product.productId}`)
+    dispatch(closeModal())
     const productId: number = params?.productId
       ? Number(params.productId)
       : 0;
-    reviewMutaion.mutate({
-      ...formData,
-      productId,
-    });
+    const reviewId: number | undefined = targetReviewData?.reviewId;
+    if (reviewId) {
+      reviewUpdateMutaion.mutate({
+        id: reviewId,
+        ...formData,
+      });
+    } else {
+      reviewMutaion.mutate({
+        ...formData,
+        productId,
+      });
+    }
     setFormData({
       contents: '',
       rating: 0,
     });
   };
+
 
   useEffect(() => {
     if (data) {
