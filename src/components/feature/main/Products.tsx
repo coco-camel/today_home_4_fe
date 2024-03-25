@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import FilterButton from './FilterButton';
+// import FilterButton from './FilterButton';
 import productAPI from '../../../apis/product';
 import {
   useInfiniteQuery,
@@ -57,13 +57,13 @@ const Products = () => {
   }, [product]);
 
   // 무료배송 분류
-  const [isFreeDelivery, setIsFreeDelivery] =
-    useState(false);
-  const handleFreeDeliveryClick = (
-    isFreeDelivery: boolean,
-  ) => {
-    setIsFreeDelivery(!isFreeDelivery);
-  };
+  // const [isFreeDelivery, setIsFreeDelivery] =
+  //   useState(false);
+  // const handleFreeDeliveryClick = (
+  //   isFreeDelivery: boolean,
+  // ) => {
+  //   setIsFreeDelivery(!isFreeDelivery);
+  // };
   const queryClient = useQueryClient();
   // 북마크 등록
   const addBookMark = async (
