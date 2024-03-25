@@ -1,12 +1,31 @@
-import { createBrowserRouter } from 'react-router-dom';
+import {
+  Navigate,
+  createBrowserRouter,
+} from 'react-router-dom';
 import App from '../App';
 import Main from '../pages/Main';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
 import Layout from '../components/layout/Layout';
 import ProductDetailPage from '../pages/ProductDetailPage/ProductDetailPage';
 import MyPage from '../pages/MyPage';
+import useIsLoggedIn from '../components/useIsLogged';
+
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+const ProtectedRoute = ({
+  children,
+}: ProtectedRouteProps) => {
+  const isLoggedIn = useIsLoggedIn();
+  return isLoggedIn ? (
+    <Navigate to="/" />
+  ) : (
+    children
+  );
+};
 
 export const router = createBrowserRouter([
   {
@@ -28,11 +47,19 @@ export const router = createBrowserRouter([
       },
       {
         path: '/signup',
-        element: <SignUp />,
+        element: (
+          <ProtectedRoute>
+            <SignUp />,
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/login',
-        element: <Login />,
+        element: (
+          <ProtectedRoute>
+            <Login />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/detail/:productId',
