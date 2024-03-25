@@ -1,8 +1,7 @@
-import { instance } from './axios';
-
+import { authInstance } from './axios';
 const productAPI = {
   getProductAll: (pageParam: number) =>
-    instance.get(`/api/v1/products`, {
+    authInstance.get(`/api/v1/products`, {
       params: {
         page: pageParam,
         size: 20,

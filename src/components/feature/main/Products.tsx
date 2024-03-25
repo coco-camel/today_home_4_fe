@@ -2,18 +2,19 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import FilterButton from './FilterButton';
-import productAPI from '../../apis/product';
+import productAPI from '../../../apis/product';
 import {
   useInfiniteQuery,
   useMutation,
 } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Product } from '../../interfaces/product/product.interface';
-import bookMarkAPI from '../../apis/bookmark';
+import { Product } from '../../../interfaces/product/product.interface';
+import bookMarkAPI from '../../../apis/bookmark';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Products = () => {
   // 전체상품 조회
+
   const getProductAll = async (
     pageParam: number,
   ) => {
@@ -32,7 +33,6 @@ const Products = () => {
     data: product,
     fetchNextPage,
     hasNextPage,
-    // isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ['projects'],
     queryFn: ({ pageParam = 1 }) =>
@@ -45,6 +45,15 @@ const Products = () => {
       return undefined;
     },
   });
+  const products = useMemo(() => {
+    let list: any[] = [];
+    product &&
+      product.pages.forEach(
+        ({ result }) =>
+          (list = [...list, ...result]),
+      );
+    return list;
+  }, [product]);
 
   // 무료배송 분류
   const [isFreeDelivery, setIsFreeDelivery] =
@@ -63,30 +72,40 @@ const Products = () => {
       await bookMarkAPI.addBookMark(productId);
     return data.data;
   };
+
   const { mutate: createMutate } = useMutation({
     mutationFn: addBookMark,
+    onSuccess: () => {},
+  });
+  //북마크 삭제
+  const delBookMark = async (
+    productId: number,
+  ) => {
+    const { data } =
+      await bookMarkAPI.delBookMark(productId);
+    return data.data;
+  };
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: delBookMark,
     onSuccess: () => {},
   });
 
   const handleBookmarkClick = (
     productId: number,
+    isBookmarked: boolean,
   ) => {
     createMutate(productId);
+    if (isBookmarked === false) {
+      createMutate(productId);
+    } else {
+      deleteMutate(productId);
+    }
   };
 
-  const products = useMemo(() => {
-    let list: any[] = [];
-    product &&
-      product.pages.forEach(
-        ({ result }) =>
-          (list = [...list, ...result]),
-      );
-    return list;
-  }, [product]);
-
-  if (!product) {
+  if (!products) {
     return <div>Loading...</div>;
   }
+
   return (
     <ProductSection>
       <h1>인기 상품</h1>
@@ -122,6 +141,7 @@ const Products = () => {
                       onClick={() =>
                         handleBookmarkClick(
                           product.productId,
+                          product.isBookmarked,
                         )
                       }
                     ></button>
