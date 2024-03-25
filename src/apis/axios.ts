@@ -37,7 +37,7 @@ authInstance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       const refreshToken = getCookie(
-        'Refresh-Token',
+        'Refresh-token',
       );
       if (refreshToken) {
         try {

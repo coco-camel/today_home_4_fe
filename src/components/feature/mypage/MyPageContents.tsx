@@ -30,7 +30,7 @@ function MyPageContents() {
       const jwt = jwtDecode(
         accessToken.substring(7),
       ) as MyJwtPayload;
-      setNickname(jwt.email);
+      setNickname(jwt.nickname);
     }
     if (!isLoggedIn) {
       navigate('/');
