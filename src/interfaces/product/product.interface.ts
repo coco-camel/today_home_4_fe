@@ -15,8 +15,11 @@ export interface Product {
   discount: number;
   price: number;
   imageUrl: string;
-  isFreeDelivery: boolean;
-  isSpecialPrice: boolean;
+  isFreeDelivery: true;
+  isSpecialPrice: true;
+  isBookmarked: true;
+  countReview: number;
+  averageRating: number;
   createdAt: string;
   modifiedAt: string;
 }

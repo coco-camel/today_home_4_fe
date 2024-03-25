@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import FilterButton from './FilterButton';
 import productAPI from '../../apis/product';
 import {
   useInfiniteQuery,
   useMutation,
-  // useQueryClient,
 } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Product } from '../../interfaces/product/product.interface';
 import bookMarkAPI from '../../apis/bookmark';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Products = () => {
   // 전체상품 조회
@@ -18,28 +19,41 @@ const Products = () => {
   ) => {
     const { data } =
       await productAPI.getProductAll(pageParam);
-    const { responseDto, hasNext } = data.data;
     return {
-      result: responseDto,
+      result: data.data.products,
       nextPage: pageParam + 1,
-      isLast: !hasNext,
+      isLast: data.data.products.length < 20,
+      hasNextPage:
+        data.data.products.length === 20,
     };
-    // return data.data.products;
   };
-  // const { data: products } = useQuery({
-  //   queryKey: ['getProductsAll'],
-  //   queryFn: getProductAll(pageParam),
-  // });
-
+  // 무한스크롤
   const {
-    data,
+    data: product,
     fetchNextPage,
-    isFetchingNextPage,
+    hasNextPage,
+    // isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: [`productList`],
+    queryKey: ['projects'],
     queryFn: ({ pageParam = 1 }) =>
       getProductAll(pageParam),
+
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.isLast)
+        return lastPage.nextPage;
+      return undefined;
+    },
   });
+
+  // 무료배송 분류
+  const [isFreeDelivery, setIsFreeDelivery] =
+    useState(false);
+  const handleFreeDeliveryClick = (
+    isFreeDelivery: boolean,
+  ) => {
+    setIsFreeDelivery(!isFreeDelivery);
+  };
 
   // 북마크 등록
   const addBookMark = async (
@@ -53,50 +67,24 @@ const Products = () => {
     mutationFn: addBookMark,
     onSuccess: () => {},
   });
-  // 북마크 삭제
-  // const delBookMark = async(
-  //   productId:number,
-  // ) => {
-  //   const { data } =
-  //     await bookMarkAPI.delBookMark(productId);
-  //   return data.data;
-  // }
-  //  const { mutate: deleteMutate } = useMutation({
-  //    mutationFn: delBookMark,
-  //    onSuccess: () => {},
-  //  });
+
   const handleBookmarkClick = (
     productId: number,
   ) => {
     createMutate(productId);
-    //  deleteMutate(productId);
-  };
-  //무한 스크롤
-  // const { data } = useInfiniteQuery({
-  //   queryKey: ['getProductsAll'],
-  //   queryFn: ({ pageParam = 1 }) =>
-  //     getProductAll(pageParam),
-  //   getNextPageParam: (lastPage) => {
-  //     if (!lastPage.isLast)
-  //       return lastPage.nextPage;
-  //     return undefined;
-  //   },
-  //   refetchOnWindowFocus: false,
-  //   refetchOnMount: true,
-  //   retry: 1,
-  // });
-
-  // 무료배송 분류
-  const [isFreeDelivery, setIsFreeDelivery] =
-    useState(false);
-  // const [modalOpen, setModalOpen] = useState(false);
-  const handleFreeDeliveryClick = (
-    isFreeDelivery: boolean,
-  ) => {
-    setIsFreeDelivery(!isFreeDelivery);
   };
 
-  if (!products) {
+  const products = useMemo(() => {
+    let list: any[] = [];
+    product &&
+      product.pages.forEach(
+        ({ result }) =>
+          (list = [...list, ...result]),
+      );
+    return list;
+  }, [product]);
+
+  if (!product) {
     return <div>Loading...</div>;
   }
   return (
@@ -109,62 +97,79 @@ const Products = () => {
         isTrue={isFreeDelivery}
       />
       <ProductWrap>
-        <ProductList>
-          {products.map((product: Product) => (
-            <ProductItem key={product.productId}>
-              <Link
-                to={`detail/${product.productId}`}
-              ></Link>
-              <ImgWrap>
-                <img
-                  src={product.imageUrl}
-                  alt=""
-                />
-                <ScrapBtn>
-                  <button
-                    onClick={() =>
-                      handleBookmarkClick(
-                        product.productId,
-                      )
-                    }
-                  ></button>
-                </ScrapBtn>
-              </ImgWrap>
-              <ItemInfo>
-                <ItemInfoHeader>
-                  <em>{product.brand}</em>
-                  <span>{product.name}</span>
-                </ItemInfoHeader>
-                <ItemPrice>
-                  <span>
-                    {product.discount}
-                    <span>%</span>
-                  </span>
-                  <span>
-                    {product.price
-                      .toString()
-                      .replace(
-                        /\B(?=(\d{3})+(?!\d))/g,
-                        ',',
-                      )}
-                  </span>
-                </ItemPrice>
-                <ItemState>
-                  <p>
-                    <span>4.8</span>
-                    <span>리뷰 33,361</span>
-                  </p>
-                </ItemState>
-                <ItemBadgeWrap>
-                  <DeliveryBadge>
-                    무료배송
-                  </DeliveryBadge>
-                  <SaleBadge>특가</SaleBadge>
-                </ItemBadgeWrap>
-              </ItemInfo>
-            </ProductItem>
-          ))}
-        </ProductList>
+        <InfiniteScroll
+          style={{ overflow: 'hidden' }}
+          hasMore={hasNextPage}
+          next={() => fetchNextPage()}
+          loader={<h4>Loading...</h4>}
+          dataLength={products.length}
+        >
+          <ProductList>
+            {products.map((product: Product) => (
+              <ProductItem
+                key={product.productId}
+              >
+                <Link
+                  to={`detail/${product.productId}`}
+                ></Link>
+                <ImgWrap>
+                  <img
+                    src={product.imageUrl}
+                    alt=""
+                  />
+                  <ScrapBtn>
+                    <button
+                      onClick={() =>
+                        handleBookmarkClick(
+                          product.productId,
+                        )
+                      }
+                    ></button>
+                  </ScrapBtn>
+                </ImgWrap>
+                <ItemInfo>
+                  <ItemInfoHeader>
+                    <em>{product.brand}</em>
+                    <span>{product.name}</span>
+                  </ItemInfoHeader>
+                  <ItemPrice>
+                    <span>
+                      <span>
+                        {product.discount}%
+                      </span>
+                    </span>
+                    <span>
+                      {product.price
+                        .toString()
+                        .replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          ',',
+                        )}
+                    </span>
+                  </ItemPrice>
+                  <ItemState>
+                    <p>
+                      <span>
+                        {product.averageRating.toFixed(
+                          1,
+                        )}
+                      </span>
+                      <span>
+                        리뷰 {product.countReview}
+                      </span>
+                    </p>
+                  </ItemState>
+                  <ItemBadgeWrap>
+                    <DeliveryBadge>
+                      무료배송
+                    </DeliveryBadge>
+                    <SaleBadge>특가</SaleBadge>
+                  </ItemBadgeWrap>
+                </ItemInfo>
+              </ProductItem>
+            ))}
+          </ProductList>
+        </InfiniteScroll>
       </ProductWrap>
     </ProductSection>
   );
@@ -183,6 +188,7 @@ const ProductSection = styled.div`
 `;
 const ProductWrap = styled.div`
   margin-top: 15px;
+  overflow: hidden;
 `;
 const ProductList = styled.ul`
   display: grid;
