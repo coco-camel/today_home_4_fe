@@ -35,7 +35,6 @@ export const ContentBox = styled.div<
 export const Container = styled.div`
   width: 1136px;
   box-sizing: border-box;
-  margin: 168px auto 0;
   ${ContentBox} {
     > img {
       width: calc(100% - 70px);
