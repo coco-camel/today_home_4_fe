@@ -1,8 +1,13 @@
 import { instance } from './axios';
 
 const productAPI = {
-  getProductAll: (page: number) =>
-    instance.get(`/api/v1/products?page=${page}`)
+  getProductAll: (pageParam: number) =>
+    instance.get(`/api/v1/products`, {
+      params: {
+        page: pageParam,
+        size: 20,
+      },
+    }),
 };
 
 export default productAPI;

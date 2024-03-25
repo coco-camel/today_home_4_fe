@@ -1,40 +1,59 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import FilterButton from './FilterButton';
 import productAPI from '../../apis/product';
 import {
   useInfiniteQuery,
   useMutation,
-  // useQueryClient,
 } from '@tanstack/react-query';
-// import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
 import { Product } from '../../interfaces/product/product.interface';
 import bookMarkAPI from '../../apis/bookmark';
-// import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Products = () => {
   // 전체상품 조회
-  const getProductAll = async (page: number) => {
+  const getProductAll = async (
+    pageParam: number,
+  ) => {
     const { data } =
-      await productAPI.getProductAll(page);
-
-    return data.data.products;
+      await productAPI.getProductAll(pageParam);
+    return {
+      result: data.data.products,
+      nextPage: pageParam + 1,
+      isLast: data.data.products.length < 20,
+      hasNextPage:
+        data.data.products.length === 20,
+    };
   };
-
   // 무한스크롤
   const {
-    data,
+    data: product,
     fetchNextPage,
-    isFetchingNextPage,
+    hasNextPage,
+    // isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ['projects'],
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam = 1 }) =>
       getProductAll(pageParam),
+
     initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) =>
-      lastPage.nextCursor,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.isLast)
+        return lastPage.nextPage;
+      return undefined;
+    },
   });
+
+  // 무료배송 분류
+  const [isFreeDelivery, setIsFreeDelivery] =
+    useState(false);
+  const handleFreeDeliveryClick = (
+    isFreeDelivery: boolean,
+  ) => {
+    setIsFreeDelivery(!isFreeDelivery);
+  };
 
   // 북마크 등록
   const addBookMark = async (
@@ -48,42 +67,26 @@ const Products = () => {
     mutationFn: addBookMark,
     onSuccess: () => {},
   });
-  // 북마크 삭제
-  // const delBookMark = async(
-  //   productId:number,
-  // ) => {
-  //   const { data } =
-  //     await bookMarkAPI.delBookMark(productId);
-  //   return data.data;
-  // }
-  //  const { mutate: deleteMutate } = useMutation({
-  //    mutationFn: delBookMark,
-  //    onSuccess: () => {},
-  //  });
+
   const handleBookmarkClick = (
     productId: number,
   ) => {
     createMutate(productId);
-    //  deleteMutate(productId);
   };
 
-  // 무료배송 분류
-  const [isFreeDelivery, setIsFreeDelivery] =
-    useState(false);
-  // const [modalOpen, setModalOpen] = useState(false);
-  const handleFreeDeliveryClick = (
-    isFreeDelivery: boolean,
-  ) => {
-    setIsFreeDelivery(!isFreeDelivery);
-  };
+  const products = useMemo(() => {
+    let list: any[] = [];
+    product &&
+      product.pages.forEach(
+        ({ result }) =>
+          (list = [...list, ...result]),
+      );
+    return list;
+  }, [product]);
 
-  // if (!products) {
-  //   return <div>Loading...</div>;
-  // }
-  // if (isLoading) return <h3>로딩중</h3>;
-  // if (isError)
-  //   return <h3>잘못된 데이터 입니다.</h3>;
-
+  if (!product) {
+    return <div>Loading...</div>;
+  }
   return (
     <ProductSection>
       <h1>인기 상품</h1>
@@ -93,75 +96,81 @@ const Products = () => {
         }
         isTrue={isFreeDelivery}
       />
-      {/* <InfiniteScroll
-        hasMore={hasNextPage}
-        next={() => fetchNextPage()}
-      > */}
       <ProductWrap>
-        <ProductList>
-          {data.map((product: Product) => (
-            <ProductItem key={product.productId}>
-              <Link
-                to={`detail/${product.productId}`}
-              ></Link>
-              <ImgWrap>
-                <img
-                  src={product.imageUrl}
-                  alt=""
-                />
-                <ScrapBtn>
-                  <button
-                    onClick={() =>
-                      handleBookmarkClick(
-                        product.productId,
-                      )
-                    }
-                  ></button>
-                </ScrapBtn>
-              </ImgWrap>
-              <ItemInfo>
-                <ItemInfoHeader>
-                  <em>{product.brand}</em>
-                  <span>{product.name}</span>
-                </ItemInfoHeader>
-                <ItemPrice>
-                  <span>
-                    {product.discount}
-                    <span>%</span>
-                  </span>
-                  <span>
-                    {product.price
-                      .toString()
-                      .replace(
-                        /\B(?=(\d{3})+(?!\d))/g,
-                        ',',
-                      )}
-                  </span>
-                </ItemPrice>
-                <ItemState>
-                  <p>
+        <InfiniteScroll
+          style={{ overflow: 'hidden' }}
+          hasMore={hasNextPage}
+          next={() => fetchNextPage()}
+          loader={<h4>Loading...</h4>}
+          dataLength={products.length}
+        >
+          <ProductList>
+            {products.map((product: Product) => (
+              <ProductItem
+                key={product.productId}
+              >
+                <Link
+                  to={`detail/${product.productId}`}
+                ></Link>
+                <ImgWrap>
+                  <img
+                    src={product.imageUrl}
+                    alt=""
+                  />
+                  <ScrapBtn>
+                    <button
+                      onClick={() =>
+                        handleBookmarkClick(
+                          product.productId,
+                        )
+                      }
+                    ></button>
+                  </ScrapBtn>
+                </ImgWrap>
+                <ItemInfo>
+                  <ItemInfoHeader>
+                    <em>{product.brand}</em>
+                    <span>{product.name}</span>
+                  </ItemInfoHeader>
+                  <ItemPrice>
                     <span>
-                      {product.averageRating.toFixed(
-                        1,
-                      )}
+                      <span>
+                        {product.discount}%
+                      </span>
                     </span>
                     <span>
-                      리뷰 {product.countReview}
+                      {product.price
+                        .toString()
+                        .replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          ',',
+                        )}
                     </span>
-                  </p>
-                </ItemState>
-                <ItemBadgeWrap>
-                  <DeliveryBadge>
-                    무료배송
-                  </DeliveryBadge>
-                  <SaleBadge>특가</SaleBadge>
-                </ItemBadgeWrap>
-              </ItemInfo>
-            </ProductItem>
-          ))}
-        </ProductList>
+                  </ItemPrice>
+                  <ItemState>
+                    <p>
+                      <span>
+                        {product.averageRating.toFixed(
+                          1,
+                        )}
+                      </span>
+                      <span>
+                        리뷰 {product.countReview}
+                      </span>
+                    </p>
+                  </ItemState>
+                  <ItemBadgeWrap>
+                    <DeliveryBadge>
+                      무료배송
+                    </DeliveryBadge>
+                    <SaleBadge>특가</SaleBadge>
+                  </ItemBadgeWrap>
+                </ItemInfo>
+              </ProductItem>
+            ))}
+          </ProductList>
+        </InfiniteScroll>
       </ProductWrap>
-      {/* </InfiniteScroll> */}
     </ProductSection>
   );
 };
@@ -179,6 +188,7 @@ const ProductSection = styled.div`
 `;
 const ProductWrap = styled.div`
   margin-top: 15px;
+  overflow: hidden;
 `;
 const ProductList = styled.ul`
   display: grid;
