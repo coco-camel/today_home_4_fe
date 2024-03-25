@@ -18,10 +18,6 @@ const Products = () => {
     (state) => state.isLoggedIn,
   );
 
-  useEffect(() => {
-    getProductAll;
-  }, [isLoggedIn]);
-
   // 전체상품 조회
   const getProductAll = async (
     pageParam: number,
@@ -41,6 +37,7 @@ const Products = () => {
     data: product,
     fetchNextPage,
     hasNextPage,
+    refetch,
   } = useInfiniteQuery({
     queryKey: ['projects'],
     queryFn: ({ pageParam = 1 }) =>
@@ -119,6 +116,9 @@ const Products = () => {
     return <div>Loading...</div>;
   }
 
+  useEffect(() => {
+    refetch();
+  }, [isLoggedIn, refetch]);
   return (
     <ProductSection>
       <h1>인기 상품</h1>
@@ -153,6 +153,7 @@ const Products = () => {
                   <ScrapBtn>
                     {!product.isBookmarked ? (
                       <button
+                        disabled={!isLoggedIn}
                         onClick={() =>
                           handleAddBookmarkClick(
                             product.productId,
