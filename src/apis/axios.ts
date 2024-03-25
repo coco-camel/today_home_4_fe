@@ -31,7 +31,6 @@ authInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    console.log(error.response.status);
     if (
       error.response.status === 401 &&
       !originalRequest._retry
@@ -43,17 +42,12 @@ authInstance.interceptors.response.use(
       console.log('refreshToken', refreshToken);
       if (refreshToken) {
         try {
-          console.log('axios 호출');
           const response = await instance.post(
             '/api/v1/members/reissue',
           );
-          console.log('axios 호출 후', response);
           const accessToken =
             response.headers['authorization'];
-          console.log(
-            'axios 호출 후 acc 토큰',
-            accessToken,
-          );
+
           localStorage.setItem(
             'accessToken',
             accessToken,
