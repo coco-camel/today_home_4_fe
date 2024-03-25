@@ -45,7 +45,8 @@ authInstance.interceptors.response.use(
             '/api/v1/members/reissue',
           );
 
-          const { accessToken } = response.data;
+          const accessToken =
+            response.headers['authorization'];
           localStorage.setItem(
             'accessToken',
             accessToken,
