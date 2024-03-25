@@ -27,7 +27,7 @@
 #### VITE
 #### React
 #### TypeScript
-#### Zustand
+#### Zustand / Redux Toolkit
 #### React Query (Tanstack Query)
 #### Axios
 #### React-dom
