@@ -15,7 +15,7 @@ export const Wrap = styled.div`
   height: 100%;
   overflow: hidden;
   overflow-y: auto;
-
+  justify-content: center;
   padding: 0 60px;
 
   * {
