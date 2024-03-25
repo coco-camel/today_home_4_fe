@@ -7,8 +7,6 @@ export const postAddReview = async ({
   rating,
   productId,
 }: ReviewData) => {
-  console.log({ contents, rating, productId });
-
   const { data } = await authInstance.post(
     `/api/v1/reviews/${productId}`,
     { contents, rating },

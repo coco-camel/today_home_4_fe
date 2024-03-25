@@ -9,12 +9,14 @@ import {
 } from 'react-redux';
 import { openModal } from '../../redux/modules/modal';
 import { ModalState } from '../../interfaces/productDetail/productDetail.interface';
-import Header from '../../components/layout/Header';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import { selectiveproduct } from '../../apis/productDetail';
 import { useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
-import { FaRegBookmark } from "react-icons/fa";
+import { FaRegBookmark } from 'react-icons/fa';
 import {
   Container,
   ContentBox,
@@ -56,25 +58,25 @@ import { Cloum } from './ProductDetailPage.styled';
 import { Line1 } from './ProductDetailPage.styled';
 import useUserStore from '../../store/userStore';
 import bookMarkAPI from '../../apis/bookmark';
-import Footer from '../../components/layout/Footer';
 import { IoBookmarkSharp } from 'react-icons/io5';
-
-
-
 
 function ProductDetailPage() {
   const params = useParams();
   const dispatch = useDispatch();
-  const isOpen = useSelector((state: { modal: ModalState }) => state.modal.isOpen);
-
+  const isOpen = useSelector(
+    (state: { modal: ModalState }) =>
+      state.modal.isOpen,
+  );
 
   const isLoggedIn = useUserStore(
     (state) => state.isLoggedIn,
   );
+
   const [targetData, setTargetData] =
     useState<any>();
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] =
+    useState(false);
 
   const queryDetail = useQuery({
     queryKey: [
@@ -94,30 +96,36 @@ function ProductDetailPage() {
       setIsBookmarked(data?.product.isBookmarked);
     }
   }, [data]);
-
-  const addBookMark = async (productId: number,) => {
-    const { data } = await bookMarkAPI.addBookMark(productId);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setIsBookmarked(false);
+    }
+  }, [isLoggedIn]);
+  const addBookMark = async (
+    productId: number,
+  ) => {
+    const { data } =
+      await bookMarkAPI.addBookMark(productId);
     return data.data;
   };
-  const { mutate: mutateAddBookmark } = useMutation({
-    mutationFn: addBookMark,
-    onSuccess: (
-    ) => {
-      queryDetail.refetch().then(() => {
-        console.log('성공')
-      });
-    }
-  });
-  const delBookMark = async (productId: number,) => {
-    const { data } = await bookMarkAPI.delBookMark(productId);
+  const { mutate: mutateAddBookmark } =
+    useMutation({
+      mutationFn: addBookMark,
+      onSuccess: () => {
+        queryDetail.refetch().then(() => {});
+      },
+    });
+  const delBookMark = async (
+    productId: number,
+  ) => {
+    const { data } =
+      await bookMarkAPI.delBookMark(productId);
     return data;
   };
 
-  const { mutate: deleteBookmark} = useMutation({
+  const { mutate: deleteBookmark } = useMutation({
     mutationFn: delBookMark,
-    onSuccess: () => {
-      console.log('취소 성공')
-    }
+    onSuccess: () => {},
   });
 
   const handleBookmarkClick = () => {
@@ -128,14 +136,14 @@ function ProductDetailPage() {
     if (isBookmarked) {
       deleteBookmark(productId, {
         onSuccess: () => {
-          setIsBookmarked(prev => !prev);
-        }
+          setIsBookmarked((prev) => !prev);
+        },
       });
     } else {
       mutateAddBookmark(productId, {
         onSuccess: () => {
-          setIsBookmarked(prev => !prev);
-        }
+          setIsBookmarked((prev) => !prev);
+        },
       });
     }
   };
@@ -144,8 +152,10 @@ function ProductDetailPage() {
     dispatch(openModal());
   };
 
-  const price: number | undefined = data?.product.price;
-  const formattedPrice: string | undefined = price?.toLocaleString();
+  const price: number | undefined =
+    data?.product.price;
+  const formattedPrice: string | undefined =
+    price?.toLocaleString();
 
   return (
     <>
@@ -155,7 +165,6 @@ function ProductDetailPage() {
         />
       )}
       <Wrap>
-        <Header />
         <Container>
           <Flex
             $width={'100%'}
@@ -300,6 +309,9 @@ function ProductDetailPage() {
               </Flex>
             </ContentBox>
           </Flex>
+          <ReivewBar>
+            <div className={'rv'}>리뷰</div>
+          </ReivewBar>
           <ReivewWrap>
             <Container>
               <ReviewBlock>
@@ -418,19 +430,42 @@ function ProductDetailPage() {
                               >
                                 {review.nickname}
                               </span>
-                              <div className={'flex'}>
+                              <div
+                                className={'flex'}
+                              >
                                 <span className="review">
-                                {Array(review.rating)
-                                  .fill(null)
-                                  .map((_, index) => (
-                                    <GoStarFill
-                                      key={index}
-                                      color={'#35c5f0'}
-                                      size={'21px'}
-                                    />
-                                  ))}
-                              </span>
-                                <span className={'create'}>{review.createdAt}</span>
+                                  {Array(
+                                    review.rating,
+                                  )
+                                    .fill(null)
+                                    .map(
+                                      (
+                                        _,
+                                        index,
+                                      ) => (
+                                        <GoStarFill
+                                          key={
+                                            index
+                                          }
+                                          color={
+                                            '#35c5f0'
+                                          }
+                                          size={
+                                            '21px'
+                                          }
+                                        />
+                                      ),
+                                    )}
+                                </span>
+                                <span
+                                  className={
+                                    'create'
+                                  }
+                                >
+                                  {
+                                    review.createdAt
+                                  }
+                                </span>
                               </div>
                             </Cloum>
                             <span
@@ -463,9 +498,6 @@ function ProductDetailPage() {
             </Container>
           </ReivewWrap>
         </Container>
-        <ReivewBar>
-          <div className={'rv'}>리뷰</div>
-        </ReivewBar>
       </Wrap>
     </>
   );
