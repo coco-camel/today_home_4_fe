@@ -321,7 +321,6 @@ export const Line1 = styled.hr`
 `;
 
 export const ReivewBar = styled.div `
-    margin-top: 300px;
     background-color: #f7f8fa;
     height: 51px;
     font-size: 15px;

@@ -43,6 +43,10 @@ export const router = createBrowserRouter([
             path: '/mypage',
             element: <MyPage />,
           },
+          {
+            path: '/detail/:productId',
+            element: <ProductDetailPage />,
+          },
         ],
       },
       {
@@ -60,10 +64,6 @@ export const router = createBrowserRouter([
             <Login />
           </ProtectedRoute>
         ),
-      },
-      {
-        path: '/detail/:productId',
-        element: <ProductDetailPage />,
       },
     ],
   },

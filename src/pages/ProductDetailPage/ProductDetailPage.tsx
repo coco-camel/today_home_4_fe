@@ -56,6 +56,8 @@ import { Cloum } from './ProductDetailPage.styled';
 import { Line1 } from './ProductDetailPage.styled';
 import useUserStore from '../../store/userStore';
 import bookMarkAPI from '../../apis/bookmark';
+import Footer from '../../components/layout/Footer';
+import { IoBookmarkSharp } from 'react-icons/io5';
 
 
 
@@ -184,9 +186,15 @@ function ProductDetailPage() {
                     {data?.product.name}
                   </ProductSpan>
                 </Flex>
-                {isLoggedIn && (
+                {!isBookmarked ? (
                   <FaRegBookmark
                     size={'28px'}
+                    onClick={handleBookmarkClick}
+                  />
+                ) : (
+                  <IoBookmarkSharp
+                    size={'32px'}
+                    color={'#35c5f0'}
                     onClick={handleBookmarkClick}
                   />
                 )}
