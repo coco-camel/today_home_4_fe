@@ -3,18 +3,25 @@ import React, {
   useState,
 } from 'react';
 import { CgProfile } from 'react-icons/cg';
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import * as S from './MyPageContentsStyles';
 import MyPageScrapList from './MyPageScrapList';
+import useUserStore from '../../../store/userStore';
 
 interface MyJwtPayload {
-  email: string;
+  nickname: string;
 }
 
 function MyPageContents() {
   const [nickname, setNickname] = useState('');
-
+  const navigate = useNavigate();
+  const isLoggedIn = useUserStore(
+    (state) => state.isLoggedIn,
+  );
   useEffect(() => {
     const accessToken = localStorage.getItem(
       'accessToken',
@@ -23,9 +30,12 @@ function MyPageContents() {
       const jwt = jwtDecode(
         accessToken.substring(7),
       ) as MyJwtPayload;
-      setNickname(jwt.email);
+      setNickname(jwt.nickname);
     }
-  }, []);
+    if (!isLoggedIn) {
+      navigate('/');
+    }
+  }, [isLoggedIn]);
 
   return (
     <S.MyPageSection>
@@ -46,7 +56,7 @@ function MyPageContents() {
           <S.SubHeader>
             <ul>
               <li>
-                <Link to="#">모두(갯수)</Link>
+                <Link to="#">모두</Link>
               </li>
             </ul>
           </S.SubHeader>

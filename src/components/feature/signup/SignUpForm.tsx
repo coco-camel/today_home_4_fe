@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useSignUp } from '../../../hooks/mutations/user/userMutation';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,7 +6,6 @@ import {
   pwCheck,
   signUpNickNameCheck,
 } from '../../../utils/regex/regex';
-import { SignUpUser } from '../../../interfaces/user/user.interface';
 import HomeIcon from '../../../assets/HomeIcon';
 import * as S from './SignUpFormStyle';
 import { duplicateTestConfirm } from '../../../apis/login';
@@ -14,46 +13,33 @@ import EmailInput from './EmailInput';
 import PasswordInput from './PasswordInput';
 import NickNameInput from './NickNameInput';
 import HomeLogo from '../../../assets/icons/homelogo.svg';
-
+import { useSignUpContext } from './SignUpContext';
 function SignupForm() {
-  const [user, setUser] = useState<SignUpUser>({
-    email: '',
-    password: '',
-    passwordCheck: '',
-    nickname: '',
-  });
-  const [SelectEmail, setSelectEmail] =
-    useState('');
-  const [customEmail, setCustomEmail] =
-    useState('');
-  const signUpMutation = useSignUp();
-
-  const [hasEmail, setHasEmail] = useState(true);
-  const [hasEmailCheck, setHasEmailCheck] =
-    useState(true);
-
-  const [hasPassword, setHasPassword] =
-    useState(true);
-  const [hasPasswordCheck, setHasPasswordCheck] =
-    useState(true);
-  const [hasNickName, setHasNickName] =
-    useState(true);
-
-  const [nickNameChecked, setNickNameChecked] =
-    useState(false);
-  const [emailChecked, setEmailChecked] =
-    useState(false);
+  const {
+    user,
+    selectEmail,
+    customEmail,
+    setHasEmail,
+    setHasEmailCheck,
+    setEmailChecked,
+    setHasNickName,
+    nickNameChecked,
+    setHasPassword,
+    setHasPasswordCheck,
+  } = useSignUpContext();
 
   const emailInputRef =
-    useRef<HTMLInputElement | null>(null);
+    useRef<HTMLInputElement>(null);
   const emailCheckInputRef =
+    useRef<HTMLInputElement>(null);
+  const nickNameInputRef =
     useRef<HTMLInputElement | null>(null);
   const passwordInputRef =
     useRef<HTMLInputElement | null>(null);
   const passwordCheckInputRef =
     useRef<HTMLInputElement | null>(null);
-  const nickNameInputRef =
-    useRef<HTMLInputElement | null>(null);
+
+  const signUpMutation = useSignUp();
 
   const navigate = useNavigate();
 
@@ -63,9 +49,9 @@ function SignupForm() {
     e.preventDefault();
     let confirm = true;
     const emailUse =
-      SelectEmail === '직접입력'
+      selectEmail === '직접입력'
         ? `${user.email}@${customEmail}`
-        : `${user.email}@${SelectEmail}`;
+        : `${user.email}@${selectEmail}`;
     const confirmUser = {
       ...user,
       email: emailUse,
@@ -98,7 +84,7 @@ function SignupForm() {
       passwordInputRef.current?.focus();
       confirm = false;
     }
-    if (SelectEmail.trim() === '') {
+    if (selectEmail.trim() === '') {
       setHasEmailCheck(false);
       emailCheckInputRef.current?.focus();
       confirm = false;
@@ -146,49 +132,20 @@ function SignupForm() {
         <S.SignUpTitle>회원가입</S.SignUpTitle>
         <S.BorderLine></S.BorderLine>
         <form>
-          {/* ...다른 필수 기능을 구현 후 꼭.. context api로 해결해보자... */}
           <EmailInput
-            user={user}
-            setUser={setUser}
-            SelectEmail={SelectEmail}
-            setSelectEmail={setSelectEmail}
-            customEmail={customEmail}
-            setCustomEmail={setCustomEmail}
-            hasEmail={hasEmail}
-            setHasEmail={setHasEmail}
-            hasEmailCheck={hasEmailCheck}
-            setHasEmailCheck={setHasEmailCheck}
-            emailChecked={emailChecked}
-            setEmailChecked={setEmailChecked}
             emailInputRef={emailInputRef}
             emailCheckInputRef={
               emailCheckInputRef
             }
           />
           <PasswordInput
-            user={user}
-            setUser={setUser}
-            hasPassword={hasPassword}
-            setHasPassword={setHasPassword}
-            hasPasswordCheck={hasPasswordCheck}
-            setHasPasswordCheck={
-              setHasPasswordCheck
-            }
             passwordInputRef={passwordInputRef}
             passwordCheckInputRef={
               passwordCheckInputRef
             }
           />
           <NickNameInput
-            user={user}
-            setUser={setUser}
-            hasNickName={hasNickName}
-            setHasNickName={setHasNickName}
-            setNickNameChecked={
-              setNickNameChecked
-            }
             nickNameInputRef={nickNameInputRef}
-            nickNameChecked={nickNameChecked}
           />
           <S.Button onClick={handleSignUpClick}>
             회원가입하기

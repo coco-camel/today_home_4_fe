@@ -4,54 +4,31 @@ import {
   signUpEmailcheck,
   signUpIdcheck,
 } from '../../../utils/regex/regex';
-import { SignUpUser } from '../../../interfaces/user/user.interface';
-// import { useSignUpContext } from './SignUpProvider';
-
+import { useSignUpContext } from './SignUpContext';
 interface EmailInputProps {
-  user: SignUpUser;
-  setUser: React.Dispatch<
-    React.SetStateAction<SignUpUser>
-  >;
-  SelectEmail: string;
-  setSelectEmail: React.Dispatch<
-    React.SetStateAction<string>
-  >;
-  customEmail: string;
-  setCustomEmail: React.Dispatch<
-    React.SetStateAction<string>
-  >;
-  hasEmail: boolean;
-  setHasEmail: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-  hasEmailCheck: boolean;
-  setHasEmailCheck: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-  emailChecked: boolean;
-  setEmailChecked: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
   emailInputRef: React.RefObject<HTMLInputElement>;
   emailCheckInputRef: React.RefObject<HTMLInputElement>;
 }
 
 function EmailInput({
-  user,
-  setUser,
-  SelectEmail,
-  setSelectEmail,
-  customEmail,
-  setCustomEmail,
-  hasEmail,
-  setHasEmail,
-  hasEmailCheck,
-  setHasEmailCheck,
-  emailChecked,
-  setEmailChecked,
   emailInputRef,
   emailCheckInputRef,
 }: EmailInputProps) {
+  const {
+    user,
+    setUser,
+    selectEmail,
+    setSelectEmail,
+    customEmail,
+    setCustomEmail,
+    hasEmail,
+    setHasEmail,
+    hasEmailCheck,
+    setHasEmailCheck,
+    emailChecked,
+    setEmailChecked,
+  } = useSignUpContext();
+
   const handleEmailChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -62,7 +39,6 @@ function EmailInput({
     }
     if (value.includes('@')) {
       await setSelectEmail('직접입력');
-      // useEffect
       emailCheckInputRef.current?.focus();
       return;
     }
@@ -113,10 +89,10 @@ function EmailInput({
           ref={emailInputRef}
         />
         <span>@</span>
-        {SelectEmail !== '직접입력' ? (
+        {selectEmail !== '직접입력' ? (
           <S.SignSelectBox
             onChange={handleEmailSelectChange}
-            value={SelectEmail}
+            value={selectEmail}
             $hasValue={hasEmail}
           >
             <option value="" disabled>
