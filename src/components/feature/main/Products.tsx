@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 import { Product } from '../../../interfaces/product/product.interface';
 import bookMarkAPI from '../../../apis/bookmark';
 import InfiniteScroll from 'react-infinite-scroll-component';
-type QueryKey = string | [string, ...any[]]; 
 const Products = () => {
   // 전체상품 조회
 
@@ -76,9 +75,9 @@ const Products = () => {
   const { mutate: createMutate } = useMutation({
     mutationFn: addBookMark,
     onSuccess: () => {
-      queryClient.invalidateQueries<QueryKey>(
-        'projects',
-      );
+      queryClient.invalidateQueries({
+        queryKey: ['projects'],
+      });
     },
   });
   //북마크 삭제
@@ -92,9 +91,9 @@ const Products = () => {
   const { mutate: deleteMutate } = useMutation({
     mutationFn: delBookMark,
     onSuccess: () => {
-      queryClient.invalidateQueries<QueryKey>(
-        'projects',
-      );4
+      queryClient.invalidateQueries({
+        queryKey: ['projects'],
+      });
     },
   });
 
