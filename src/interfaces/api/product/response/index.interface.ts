@@ -12,7 +12,7 @@ export interface Product {
   isSpecialPrice: boolean;
   name: string;
   price: number;
-  productId: string;
+  productId: number;
 }
 
 export interface Reviews {
