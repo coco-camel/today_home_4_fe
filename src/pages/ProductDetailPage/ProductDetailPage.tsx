@@ -10,10 +10,11 @@ import {
 import { openModal } from '../../redux/modules/modal';
 import { ModalState } from '../../interfaces/productDetail/productDetail.interface';
 import Header from '../../components/layout/Header';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { selectiveproduct } from '../../apis/productDetail';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
+import { FaRegBookmark } from "react-icons/fa";
 import {
   Container,
   ContentBox,
@@ -54,8 +55,8 @@ import { RiCoupon2Line } from 'react-icons/ri';
 import { Cloum } from './ProductDetailPage.styled';
 import { Line1 } from './ProductDetailPage.styled';
 import useUserStore from '../../store/userStore';
-import create from 'zustand';
-import ScrapIcon from '../../assets/icons/scrapIcon.svg';
+import bookMarkAPI from '../../apis/bookmark';
+
 
 function ProductDetailPage() {
   const params = useParams();
@@ -82,12 +83,32 @@ function ProductDetailPage() {
     enabled: !!params.productId,
   });
 
-
+  const navigate = useNavigate()
   useEffect(() => {
     if (data) {
       console.log(data);
     }
   }, [data]);
+
+  const addBookMark = async (
+    productId: number,
+  ) => {
+    const { data } =
+      await bookMarkAPI.addBookMark(productId);
+    return data.data;
+  };
+  const { mutate: createMutate } = useMutation({
+    mutationFn: addBookMark,
+    onSuccess: (
+    ) => {console.log('성공')},
+  });
+
+  const handleBookmarkClick = (
+    productId: number,
+  ) => {
+    createMutate(productId);
+    navigate('/');
+  };
 
   const handleClickShowModal = () => {
     dispatch(openModal());
@@ -138,9 +159,13 @@ function ProductDetailPage() {
                     {data?.product.name}
                   </ProductSpan>
                 </Flex>
-                <img
-                  src={ScrapIcon}
-                  alt=""
+                <FaRegBookmark
+                  size={'28px'}
+                  onClick={() =>
+                    handleBookmarkClick(
+                      params?.productId,
+                    )
+                  }
                 />
               </Flex>
               <Flex
