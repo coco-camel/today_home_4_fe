@@ -1,34 +1,25 @@
 import React from 'react';
 import * as S from './SignUpFormStyle';
-import { SignUpUser } from '../../../interfaces/user/user.interface';
 import { pwCheck } from '../../../utils/regex/regex';
+import { useSignUpContext } from './SignUpContext';
 
 interface PasswordInputProps {
-  user: SignUpUser;
-  setUser: React.Dispatch<
-    React.SetStateAction<SignUpUser>
-  >;
-  hasPassword: boolean;
-  setHasPassword: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-  hasPasswordCheck: boolean;
-  setHasPasswordCheck: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
   passwordInputRef: React.RefObject<HTMLInputElement>;
   passwordCheckInputRef: React.RefObject<HTMLInputElement>;
 }
+
 function PasswordInput({
-  user,
-  setUser,
-  hasPassword,
-  setHasPassword,
-  hasPasswordCheck,
-  setHasPasswordCheck,
   passwordInputRef,
   passwordCheckInputRef,
 }: PasswordInputProps) {
+  const {
+    user,
+    setUser,
+    hasPassword,
+    setHasPassword,
+    hasPasswordCheck,
+    setHasPasswordCheck,
+  } = useSignUpContext();
   const handlePasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
