@@ -13,7 +13,7 @@ import MyPageScrapList from './MyPageScrapList';
 import useUserStore from '../../../store/userStore';
 
 interface MyJwtPayload {
-  email: string;
+  nickname: string;
 }
 
 function MyPageContents() {
