@@ -10,6 +10,7 @@ import {
 import { router } from './routes/Router';
 import { Provider } from 'react-redux';
 import store from './redux/config/configStore';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -19,6 +20,7 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
       <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </Provider>
   </QueryClientProvider>,
 );

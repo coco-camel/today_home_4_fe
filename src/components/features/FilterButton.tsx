@@ -9,7 +9,10 @@ interface FilterButtonProps {
   ) => void;
   isTrue: boolean;
 }
-const FilterButton = ({ onFreeDeliveryClick, isTrue }: FilterButtonProps) => {
+const FilterButton = ({
+  onFreeDeliveryClick,
+  isTrue,
+}: FilterButtonProps) => {
   return (
     <FilterBtnWrap>
       <FilterBtns $isTrue={isTrue}>
@@ -31,7 +34,11 @@ const FilterButton = ({ onFreeDeliveryClick, isTrue }: FilterButtonProps) => {
           </span>
         </FreeDeliveryBtn>
         <FreeDeliveryModal>
-          <button onClick={() => onFreeDeliveryClick(isTrue)}>
+          <button
+            onClick={() =>
+              onFreeDeliveryClick(isTrue)
+            }
+          >
             <span>무료배송만 보기</span>
             <CheckedBox className="free-delivery__check-btn"></CheckedBox>
           </button>
@@ -123,7 +130,7 @@ const CheckedBox = styled.div`
   position: relative;
   width: 50px;
   height: 25px;
-  background: #f5f5f5;
+  background: #ebebeb;
   border-radius: 30px;
   &::before {
     content: '';
@@ -134,7 +141,7 @@ const CheckedBox = styled.div`
     border-radius: 50%;
     background: #fff;
     top: 4px;
-    transform: translateX(6px);
+    transform: translateX(5px);
     transition: all 0.1s ease-in-out;
   }
 `;
