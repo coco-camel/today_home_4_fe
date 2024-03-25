@@ -28,6 +28,14 @@ export const Input = styled.input<{
     z-index: 2;
   }
 `;
+
+export const LogoLink = styled(Link)`
+  display: flex;
+  align-items: center;
+`;
+export const HomeIconText = styled.img`
+  margin-left: 8px;
+`;
 export const SignContainer = styled.div`
   width: 360px;
   padding: 60px 0;
